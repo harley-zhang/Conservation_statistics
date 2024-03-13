@@ -5,6 +5,8 @@ library(tidyr)
 # Step 1: Read in the CSV
 input_data <- read.csv("/Users/harley/Documents/Github/Trinchera_summary/2023/cleanedMerged_Forestry23_030524_2.csv")
 
+#### TREE STATISTICS
+
 # Step 2: Basal area per acre (in)
 basal_area <- input_data %>%
   filter(alive_or_dead == "living", !is.na(dbh_cm_tree)) %>%
@@ -23,25 +25,7 @@ average_height <- input_data %>%
   group_by(new_plot_key) %>%
   summarise(average_height_ft = round(mean(total_height_m_tree) * 3.28084, 2))
 
-# Step 5: Regeneration presence (Y/N)
-regeneration_presence <- input_data %>%
-  filter(alive_or_dead == "living", !is.na(size_class)) %>%
-  group_by(new_plot_key) %>%
-  summarise(regeneration_presence = ifelse(any(size_class == "sapling" | size_class == "seedling"), "Regeneration present", "Regeneration absent"))
-
-# Step 6: Insect presence (Y/N)
-insect_damage_presence <- input_data %>%
-  filter(!is.na(insect_presence)) %>%
-  group_by(new_plot_key) %>%
-  summarise(insect_damage_presence = ifelse(any(insect_presence == 1), "Insect damage present", "Insect damage absent"))
-
-# Step 7: Browse presence (Y/N)
-browse_damage_presence <- input_data %>%
-  filter(!is.na(browse_presence)) %>%
-  group_by(new_plot_key) %>%
-  summarise(browse_damage_presence = ifelse(any(browse_presence == 1), "Browse present", "Browse absent"))
-
-# Step 8: Dominant tree species
+# Step 5: Dominant tree species
 dominant_tree_species <- input_data %>%
   filter(alive_or_dead == "living", size_class == "tree", !is.na(tree_species)) %>%
   group_by(new_plot_key) %>%
@@ -86,7 +70,16 @@ dominant_tree_species <- input_data %>%
     }
   })
 
-# Step 9: Seedlings per acre
+
+#### REGENERATION STATISTICS
+
+# Step 6: Regeneration presence (Y/N)
+regeneration_presence <- input_data %>%
+  filter(alive_or_dead == "living", !is.na(size_class)) %>%
+  group_by(new_plot_key) %>%
+  summarise(regeneration_presence = ifelse(any(size_class == "sapling" | size_class == "seedling"), "Regeneration present", "Regeneration absent"))
+
+# Step 7: Seedlings per acre
 seedlings_per_acre <- input_data %>%
   filter(size_class == "seedling", !is.na(number_of_seedlings)) %>%
   group_by(new_plot_key) %>%
@@ -94,12 +87,25 @@ seedlings_per_acre <- input_data %>%
   right_join(distinct(select(input_data, new_plot_key)), by = "new_plot_key") %>%
   mutate(seedlings_per_acre = if_else(is.na(seedlings_per_acre), 0, seedlings_per_acre))
 
+## DAMAGE STATISTICS
+
+# Step 8: Insect presence (Y/N)
+insect_damage_presence <- input_data %>%
+  filter(!is.na(insect_presence)) %>%
+  group_by(new_plot_key) %>%
+  summarise(insect_damage_presence = ifelse(any(insect_presence == 1), "Insect damage present", "Insect damage absent"))
+
+# Step 9: Browse presence (Y/N)
+browse_damage_presence <- input_data %>%
+  filter(!is.na(browse_presence)) %>%
+  group_by(new_plot_key) %>%
+  summarise(browse_damage_presence = ifelse(any(browse_presence == 1), "Browse present", "Browse absent"))
+
 # Merge all outputs into one dataframe
 output_statistics <- Reduce(function(x, y) merge(x, y, by = "new_plot_key", all = TRUE), 
-                            list(basal_area, average_dbh, 
-                                 average_height, regeneration_presence, 
-                                 insect_damage_presence, browse_damage_presence, 
-                                 dominant_tree_species, seedlings_per_acre))
+                            list(basal_area, average_dbh, average_height, dominant_tree_species, 
+                                 regeneration_presence, seedlings_per_acre,
+                                 insect_damage_presence, browse_damage_presence))
 
 # Write output to CSV
 write.csv(output_statistics, file = "/Users/harley/Documents/output_statistics.csv", row.names = FALSE)
