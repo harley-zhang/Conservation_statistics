@@ -82,12 +82,20 @@ dominant_tree_species <- input_data %>%
     }
   })
 
+# Step 9: Seedlings per acre
+seedlings_per_acre <- input_data %>%
+  filter(size_class == "seedling", !is.na(number_of_seedlings)) %>%
+  group_by(new_plot_key) %>%
+  summarise(seedlings_per_acre = sum(number_of_seedlings, na.rm = TRUE) * 50) %>%
+  right_join(distinct(select(input_data, new_plot_key)), by = "new_plot_key") %>%
+  mutate(seedlings_per_acre = if_else(is.na(seedlings_per_acre), 0, seedlings_per_acre))
+
 # Merge all outputs into one dataframe
 output_statistics <- Reduce(function(x, y) merge(x, y, by = "new_plot_key", all = TRUE), 
                             list(basal_area, average_dbh, 
                                  average_height, regeneration_presence, 
                                  insect_damage_presence, browse_damage_presence, 
-                                 dominant_tree_species))
+                                 dominant_tree_species, seedlings_per_acre))
 
 # Write output to CSV
 write.csv(output_statistics, file = "/Users/harley/Documents/output_statistics.csv", row.names = FALSE)
