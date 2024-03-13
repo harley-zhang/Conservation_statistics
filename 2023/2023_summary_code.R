@@ -27,19 +27,19 @@ average_height <- input_data %>%
 regeneration_presence <- input_data %>%
   filter(alive_or_dead == "living", !is.na(size_class)) %>%
   group_by(new_plot_key) %>%
-  summarise(regeneration_presence = ifelse(any(size_class == "sapling" | size_class == "seedling"), "Regeneration present", "No regeneration"))
+  summarise(regeneration_presence = ifelse(any(size_class == "sapling" | size_class == "seedling"), "Regeneration present", "Regeneration absent"))
 
 # Step 6: Insect presence (Y/N)
 insect_damage_presence <- input_data %>%
   filter(!is.na(insect_presence)) %>%
   group_by(new_plot_key) %>%
-  summarise(insect_damage_presence = ifelse(any(insect_presence == 1), "Insect damage present", "No insect damage"))
+  summarise(insect_damage_presence = ifelse(any(insect_presence == 1), "Insect damage present", "Insect damage absent"))
 
 # Step 7: Browse presence (Y/N)
 browse_damage_presence <- input_data %>%
   filter(!is.na(browse_presence)) %>%
   group_by(new_plot_key) %>%
-  summarise(browse_damage_presence = ifelse(any(browse_presence == 1), "Browse present", "No browse present"))
+  summarise(browse_damage_presence = ifelse(any(browse_presence == 1), "Browse present", "Browse absent"))
 
 # Step 8: Dominant tree species
 dominant_tree_species <- input_data %>%
@@ -51,27 +51,31 @@ dominant_tree_species <- input_data %>%
     most_common_species <- names(species_counts)[species_counts == max_count]
     percent_frequency <- max_count / length(tree_species) * 100
     species_name <- switch(most_common_species[1],
-                           "PSME" = "Douglas fir",
-                           "PIPO" = "Ponderosa pine",
-                           "POTR" = "Aspen",
+                           "ABCO" = "White fir",
+                           "ABLA" = "Subalpine fir",
+                           "ACGL" = "Rocky Mountain maple",
                            "JUSC" = "Rocky Mountain juniper",
                            "PIED" = "Colorado pinyon",
-                           "ABCO" = "White fir",
+                           "PIEN" = "Engelmann spruce",
                            "PIFL" = "Limber pine",
-                           "ACGL" = "acgl_")
+                           "PIPO" = "Ponderosa pine",
+                           "POTR" = "Aspen",
+                           "PSME" = "Douglas fir")
     if (percent_frequency <= 50) {
       second_most_common_species <- names(sort(table(tree_species), decreasing = TRUE))[2]
       second_max_count <- table(tree_species)[second_most_common_species]
       second_percent_frequency <- second_max_count / length(tree_species) * 100
       second_species_name <- switch(second_most_common_species,
-                                    "PSME" = "Douglas fir",
-                                    "PIPO" = "Ponderosa pine",
-                                    "POTR" = "Aspen",
+                                    "ABCO" = "White fir",
+                                    "ABLA" = "Subalpine fir",
+                                    "ACGL" = "Rocky Mountain maple",
                                     "JUSC" = "Rocky Mountain juniper",
                                     "PIED" = "Colorado pinyon",
-                                    "ABCO" = "White fir",
+                                    "PIEN" = "Engelmann spruce",
                                     "PIFL" = "Limber pine",
-                                    "ACGL" = "acgl_")
+                                    "PIPO" = "Ponderosa pine",
+                                    "POTR" = "Aspen",
+                                    "PSME" = "Douglas fir")
       percent_frequency <- format(round(percent_frequency, 2), nsmall = 2)
       second_percent_frequency <- format(round(second_percent_frequency, 2), nsmall = 2)
       paste(species_name, " (", percent_frequency, "%), ", 
