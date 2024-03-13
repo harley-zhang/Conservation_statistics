@@ -50,7 +50,7 @@ dominant_tree_species <- input_data %>%
     max_count <- max(species_counts)
     most_common_species <- names(species_counts)[species_counts == max_count]
     percent_frequency <- max_count / length(tree_species) * 100
-    species_name <- switch(tolower(most_common_species[1]),
+    species_name <- switch(most_common_species[1],
                            "PSME" = "Douglas fir",
                            "PIPO" = "Ponderosa pine",
                            "POTR" = "Aspen",
@@ -63,7 +63,7 @@ dominant_tree_species <- input_data %>%
       second_most_common_species <- names(sort(table(tree_species), decreasing = TRUE))[2]
       second_max_count <- table(tree_species)[second_most_common_species]
       second_percent_frequency <- second_max_count / length(tree_species) * 100
-      second_species_name <- switch(tolower(second_most_common_species),
+      second_species_name <- switch(second_most_common_species,
                                     "PSME" = "Douglas fir",
                                     "PIPO" = "Ponderosa pine",
                                     "POTR" = "Aspen",
