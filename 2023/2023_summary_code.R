@@ -3,7 +3,7 @@ library(dplyr)
 library(tidyr)
 
 # Step 1: Read in the CSV file
-input_data <- read.csv("/Users/harley/Documents/Trinchera_summary/2023/cleanedMerged_Forestry23_030524_2.csv")
+input_data <- read.csv("/Users/harley/Documents/Github/Trinchera_summary/2023/cleanedMerged_Forestry23_030524_2.csv")
 
 # Step 2: Calculate basal area per acre
 basal_area <- input_data %>%
