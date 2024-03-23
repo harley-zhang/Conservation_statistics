@@ -1,11 +1,12 @@
 # Load required libraries
 library(dplyr)
 library(tidyr)
+library(stringr)
 
 # Step 1: Read in the CSV
 input_data <- read.csv("/Users/harley/Documents/Github/Trinchera_summary/2023/cleanedMerged_Forestry23_030524_2.csv")
 
-#### TREE STATISTICS
+#### TREE STATISTICS ####
 
 # Step 2: Basal area per acre (in)
 basal_area <- input_data %>%
@@ -13,7 +14,7 @@ basal_area <- input_data %>%
   group_by(new_plot_key) %>%
   summarise(basal_area_per_acre_in = round(sum(0.005454 * (dbh_cm_tree/2.54)^2) * 5, 2))
 
-# Step 3: Average dbh (in)
+# Step 3: Average DBH (in)
 average_dbh <- input_data %>%
   filter(alive_or_dead == "living", !is.na(dbh_cm_tree)) %>%
   group_by(new_plot_key) %>%
@@ -71,7 +72,7 @@ dominant_tree_species <- input_data %>%
   })
 
 
-#### REGENERATION STATISTICS
+#### REGENERATION STATISTICS ####
 
 # Step 6: Regeneration presence (Y/N)
 regeneration_presence <- input_data %>%
@@ -87,7 +88,7 @@ seedlings_per_acre <- input_data %>%
   right_join(distinct(select(input_data, new_plot_key)), by = "new_plot_key") %>%
   mutate(seedlings_per_acre = if_else(is.na(seedlings_per_acre), 0, seedlings_per_acre))
 
-## DAMAGE STATISTICS
+#### DAMAGE STATISTICS ####
 
 # Step 8: Insect presence (Y/N)
 insect_damage_presence <- input_data %>%
@@ -101,11 +102,41 @@ browse_damage_presence <- input_data %>%
   group_by(new_plot_key) %>%
   summarise(browse_damage_presence = ifelse(any(browse_presence == 1), "Browse present", "Browse absent"))
 
+# Step 10: List of damage types
+list_damage <- input_data %>%
+  mutate(what_if_any_disease_damage_present = tolower(what_if_any_disease_damage_present)) %>%
+  mutate(what_if_any_disease_damage_present = gsub("mechanicaldamamge", "mechanicaldamage", what_if_any_disease_damage_present)) %>%
+  mutate(what_if_any_disease_damage_present = gsub("woodpeckers", "woodpecker", what_if_any_disease_damage_present)) %>%
+  separate_rows(what_if_any_disease_damage_present, sep = ",") %>%
+  mutate(what_if_any_disease_damage_present = trimws(what_if_any_disease_damage_present)) %>%
+  mutate(what_if_any_disease_damage_present = case_when(
+    what_if_any_disease_damage_present == "barkbeetle" ~ "bark beetle",
+    what_if_any_disease_damage_present == "browse" ~ "browse",
+    what_if_any_disease_damage_present == "canker" ~ "canker",
+    what_if_any_disease_damage_present == "douglasfiradelgid" ~ "Douglas fir adelgid",
+    what_if_any_disease_damage_present == "fungus" ~ "fungus",
+    what_if_any_disease_damage_present == "mistletoe" ~ "mistletoe",
+    what_if_any_disease_damage_present == "galls" ~ "galls",
+    what_if_any_disease_damage_present == "gash" ~ "gash",
+    what_if_any_disease_damage_present == "mechanicaldamage" ~ "mechanical damage",
+    what_if_any_disease_damage_present == "sapsucker" ~ "sapsucker",
+    what_if_any_disease_damage_present == "sprucebudworm" ~ "spruce budworm",
+    what_if_any_disease_damage_present == "winddamage" ~ "wind damage",
+    what_if_any_disease_damage_present == "woodpecker" ~ "woodpecker",
+    what_if_any_disease_damage_present == "rot" ~ "rot",
+    TRUE ~ NA_character_
+  )) %>%
+  distinct(new_plot_key, what_if_any_disease_damage_present) %>%
+  group_by(new_plot_key) %>%
+  summarise(list_damage = if_else(all(what_if_any_disease_damage_present %in% c("n", "none", NA)), "None", paste(sort(na.omit(what_if_any_disease_damage_present)), collapse = ", "))) %>%
+  mutate(list_damage = str_to_sentence(list_damage, locale="en")) %>%
+  mutate(list_damage = gsub("douglas", "Douglas", list_damage))
+
 # Merge all outputs into one dataframe
 output_statistics <- Reduce(function(x, y) merge(x, y, by = "new_plot_key", all = TRUE), 
                             list(basal_area, average_dbh, average_height, dominant_tree_species, 
                                  regeneration_presence, seedlings_per_acre,
-                                 insect_damage_presence, browse_damage_presence))
+                                 insect_damage_presence, browse_damage_presence, list_damage))
 
 # Write output to CSV
 write.csv(output_statistics, file = "/Users/harley/Documents/output_statistics.csv", row.names = FALSE)
