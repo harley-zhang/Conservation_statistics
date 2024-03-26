@@ -71,7 +71,6 @@ dominant_tree_species <- input_data %>%
     }
   })
 
-
 #### REGENERATION STATISTICS ####
 
 # Step 6: Regeneration presence (Y/N)
@@ -132,11 +131,24 @@ list_damage <- input_data %>%
   mutate(list_damage = str_to_sentence(list_damage, locale="en")) %>%
   mutate(list_damage = gsub("douglas", "Douglas", list_damage))
 
+#Step 11: Dominant regeneration species
+
+
 # Merge all outputs into one dataframe
 output_statistics <- Reduce(function(x, y) merge(x, y, by = "new_plot_key", all = TRUE), 
                             list(basal_area, average_dbh, average_height, dominant_tree_species, 
                                  regeneration_presence, seedlings_per_acre,
-                                 insect_damage_presence, browse_damage_presence, list_damage))
+                                 insect_damage_presence, browse_damage_presence, list_damage, number_of_saplings_and_seedlings))
 
 # Write output to CSV
 write.csv(output_statistics, file = "/Users/harley/Documents/output_statistics.csv", row.names = FALSE)
+
+
+
+# Step 11: Adult live tree count
+adult_live_tree_count <- input_data %>%
+  filter(alive_or_dead == "living", size_class == "tree") %>%
+  group_by(new_plot_key) %>%
+  summarise(adult_live_tree_count = n())
+
+write.csv(adult_live_tree_count, file = "/Users/harley/Documents/adult_live_tree_count.csv", row.names = FALSE)
