@@ -75,9 +75,8 @@ dominant_tree_species <- input_data %>%
 
 # Step 6: Regeneration presence (Y/N)
 regeneration_presence <- input_data %>%
-  filter(alive_or_dead == "living", !is.na(size_class)) %>%
   group_by(new_plot_key) %>%
-  summarise(regeneration_presence = ifelse(any(size_class == "sapling" | size_class == "seedling"), "Regeneration present", "Regeneration absent"))
+  summarise(regeneration_presence = ifelse(any((size_class == "sapling" & alive_or_dead == "living") | (size_class == "seedling" & number_of_seedlings > 0)), "Regeneration present", "Regeneration absent"))
 
 # Step 7: Seedlings per acre
 seedlings_per_acre <- input_data %>%
@@ -87,21 +86,56 @@ seedlings_per_acre <- input_data %>%
   right_join(distinct(select(input_data, new_plot_key)), by = "new_plot_key") %>%
   mutate(seedlings_per_acre = if_else(is.na(seedlings_per_acre), 0, seedlings_per_acre))
 
+# Step 8: Dominant regeneration species
+dominant_regeneration_species <- input_data %>%
+  filter((size_class == "sapling" & alive_or_dead == "living") | (size_class == "seedling" & number_of_seedlings > 0)) %>%
+  group_by(new_plot_key, tree_species) %>%
+  summarise(regeneration_count = sum(size_class == "sapling") + sum(ifelse(size_class == "seedling", number_of_seedlings, 0))) %>%
+  group_by(new_plot_key) %>%
+  mutate(percent_frequency = regeneration_count / sum(regeneration_count) * 100) %>%
+  mutate(tree_species = case_when(
+    tree_species == "ABCO" ~ "White fir",
+    tree_species == "ABLA" ~ "Subalpine fir",
+    tree_species == "ACGL" ~ "Rocky Mountain maple",
+    tree_species == "JUSC" ~ "Rocky Mountain juniper",
+    tree_species == "PIED" ~ "Colorado pinyon",
+    tree_species == "PIEN" ~ "Engelmann spruce",
+    tree_species == "PIFL" ~ "Limber pine",
+    tree_species == "PIPO" ~ "Ponderosa pine",
+    tree_species == "POTR" ~ "Aspen",
+    tree_species == "PSME" ~ "Douglas fir",
+    TRUE ~ as.character(tree_species)
+  )) %>%
+  arrange(desc(percent_frequency)) %>%
+  summarise(dominant_regeneration_species = {
+    if (percent_frequency[1] <= 50) {
+      paste(tree_species[1], " (", round(percent_frequency[1], 2), "%), ", 
+            tree_species[2], " (", round(percent_frequency[2], 2), "%)", sep = "")
+    } else {
+      paste(tree_species[1], " (", round(percent_frequency[1], 2), "%)", sep = "")
+    }
+  })
+
+dominant_regeneration_species <- input_data %>%
+  distinct(new_plot_key) %>%
+  left_join(dominant_regeneration_species, by = "new_plot_key") %>%
+  mutate(dominant_regeneration_species = ifelse(is.na(dominant_regeneration_species), "None", dominant_regeneration_species))
+
 #### DAMAGE STATISTICS ####
 
-# Step 8: Insect presence (Y/N)
+# Step 9: Insect presence (Y/N)
 insect_damage_presence <- input_data %>%
   filter(!is.na(insect_presence)) %>%
   group_by(new_plot_key) %>%
   summarise(insect_damage_presence = ifelse(any(insect_presence == 1), "Insect damage present", "Insect damage absent"))
 
-# Step 9: Browse presence (Y/N)
+# Step 10: Browse presence (Y/N)
 browse_damage_presence <- input_data %>%
   filter(!is.na(browse_presence)) %>%
   group_by(new_plot_key) %>%
   summarise(browse_damage_presence = ifelse(any(browse_presence == 1), "Browse present", "Browse absent"))
 
-# Step 10: List of damage types
+# Step 11: List of damage types
 list_damage <- input_data %>%
   mutate(what_if_any_disease_damage_present = tolower(what_if_any_disease_damage_present)) %>%
   mutate(what_if_any_disease_damage_present = gsub("mechanicaldamamge", "mechanicaldamage", what_if_any_disease_damage_present)) %>%
@@ -131,19 +165,18 @@ list_damage <- input_data %>%
   mutate(list_damage = str_to_sentence(list_damage, locale="en")) %>%
   mutate(list_damage = gsub("douglas", "Douglas", list_damage))
 
-#Step 11: Dominant regeneration species
-
-
 # Merge all outputs into one dataframe
 output_statistics <- Reduce(function(x, y) merge(x, y, by = "new_plot_key", all = TRUE), 
                             list(basal_area, average_dbh, average_height, dominant_tree_species, 
-                                 regeneration_presence, seedlings_per_acre,
-                                 insect_damage_presence, browse_damage_presence, list_damage, number_of_saplings_and_seedlings))
+                                 regeneration_presence, seedlings_per_acre, dominant_regeneration_species,
+                                 insect_damage_presence, browse_damage_presence, list_damage))
 
 # Write output to CSV
 write.csv(output_statistics, file = "/Users/harley/Documents/output_statistics.csv", row.names = FALSE)
 
 
+
+#### SEPERATE ####
 
 # Step 11: Adult live tree count
 adult_live_tree_count <- input_data %>%
