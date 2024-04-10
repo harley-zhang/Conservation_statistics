@@ -166,13 +166,13 @@ list_damage <- input_data %>%
   mutate(list_damage = gsub("douglas", "Douglas", list_damage))
 
 # Merge all outputs into one dataframe
-output_statistics <- Reduce(function(x, y) merge(x, y, by = "new_plot_key", all = TRUE), 
+output_statistics_2023 <- Reduce(function(x, y) merge(x, y, by = "new_plot_key", all = TRUE), 
                             list(basal_area, average_dbh, average_height, dominant_tree_species, 
                                  regeneration_presence, seedlings_per_acre, dominant_regeneration_species,
                                  insect_damage_presence, browse_damage_presence, list_damage))
 
 # Write output to CSV
-write.csv(output_statistics, file = "/Users/harley/Documents/output_statistics.csv", row.names = FALSE)
+write.csv(output_statistics, file = "/Users/harley/Documents/2023_output_statistics.csv", row.names = FALSE)
 
 
 
