@@ -142,9 +142,11 @@ output_statistics_2022 <- Reduce(function(x, y) merge(x, y, by = "plot", all = T
                                  insect_damage_presence, browse_damage_presence))
 
 output_statistics_2022 <- output_statistics_2022 %>%
-  mutate(average_height_ft = ifelse(is.na(average_height_ft), "None", average_height_ft),
-         average_dbh_in = ifelse(is.na(average_dbh_in), "None", average_dbh_in),
-         dbh = ifelse(is.na(dbh), "yes", dbh))
+  mutate(basal_area_per_acre_in = ifelse(is.na(basal_area_per_acre_in), "No live adult trees present", basal_area_per_acre_in),
+         average_dbh_in = ifelse(is.na(average_dbh_in), "No live adult trees present", average_dbh_in),
+         average_height_ft = ifelse(is.na(average_height_ft), "No live adult trees present", average_height_ft),
+         dominant_tree_species = ifelse(is.na(dominant_tree_species), "No live adult trees present", dominant_tree_species),
+         regeneration_presence = ifelse(is.na(regeneration_presence), "Regeneration absent", regeneration_presence))
 
 # Write output to CSV
 write.csv(output_statistics_2022, file = "/Users/harley/Documents/Github/Trinchera_summary/2022/2022_output_statistics.csv", row.names = FALSE)
