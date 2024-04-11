@@ -172,11 +172,11 @@ output_statistics_2023 <- Reduce(function(x, y) merge(x, y, by = "new_plot_key",
                                  insect_damage_presence, browse_damage_presence, list_damage))
 
 # Write output to CSV
-write.csv(output_statistics, file = "/Users/harley/Documents/Github/Trinchera_summary/2023/2023_output_statistics.csv", row.names = FALSE)
+write.csv(output_statistics_2023, file = "/Users/harley/Documents/Github/Trinchera_summary/2023/2023_output_statistics.csv", row.names = FALSE)
 
 
 
-#### SEPERATE ####
+#### SEPARATE ####
 
 # Step 11: Adult live tree count
 adult_live_tree_count <- input_data %>%
