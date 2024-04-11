@@ -3,7 +3,7 @@ library(dplyr)
 library(tidyr)
 library(stringr)
 
-# Step 1: Read in the CSV
+# Step 1: Read in raw/input CSV
 input_data <- read.csv("/Users/harley/Documents/Github/Trinchera_summary/2022/2024Updated_2022_ForestMont_MergedData.csv")
 
 #### TREE STATISTICS ####
