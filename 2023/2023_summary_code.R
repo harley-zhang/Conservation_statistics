@@ -9,19 +9,19 @@ input_data <- read.csv("/Users/harley/Documents/Github/Trinchera_summary/2023/cl
 #### TREE STATISTICS ####
 
 # Step 2: Basal area per acre (in)
-basal_area <- input_data %>%
+basal_area_per_acre_in <- input_data %>%
   filter(alive_or_dead == "living", !is.na(dbh_cm_tree)) %>%
   group_by(new_plot_key) %>%
   summarise(basal_area_per_acre_in = round(sum(0.005454 * (dbh_cm_tree/2.54)^2) * 5, 2))
 
 # Step 3: Average DBH (in)
-average_dbh <- input_data %>%
+average_dbh_in <- input_data %>%
   filter(alive_or_dead == "living", !is.na(dbh_cm_tree)) %>%
   group_by(new_plot_key) %>%
   summarise(average_dbh_in = round(mean(dbh_cm_tree) / 2.54, 2))
 
 # Step 4: Average height (ft)
-average_height <- input_data %>%
+average_height_ft <- input_data %>%
   filter(alive_or_dead == "living", !is.na(total_height_m_tree)) %>%
   group_by(new_plot_key) %>%
   summarise(average_height_ft = round(mean(total_height_m_tree) * 3.28084, 2))
@@ -167,7 +167,7 @@ list_damage <- input_data %>%
 
 # Merge all outputs into one dataframe
 output_statistics_2023 <- Reduce(function(x, y) merge(x, y, by = "new_plot_key", all = TRUE), 
-                            list(basal_area, average_dbh, average_height, dominant_tree_species, 
+                            list(basal_area_per_acre_in, average_dbh_in, average_height_ft, dominant_tree_species, 
                                  regeneration_presence, seedlings_per_acre, dominant_regeneration_species,
                                  insect_damage_presence, browse_damage_presence, list_damage))
 
