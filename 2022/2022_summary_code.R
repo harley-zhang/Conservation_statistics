@@ -9,19 +9,19 @@ input_data <- read.csv("/Users/harley/Documents/Github/Trinchera_summary/2022/20
 #### TREE STATISTICS ####
 
 # Step 2: Basal area per acre (in)
-basal_area <- input_data %>%
+basal_area_per_acre_in <- input_data %>%
   filter(living_dead == "L", !is.na(dbh)) %>%
   group_by(plot) %>%
   summarise(basal_area_per_acre_in = round(sum(0.005454 * (dbh/2.54)^2) * 5, 2))
 
 # Step 3: Average DBH (in)
-average_dbh <- input_data %>%
+average_dbh_in <- input_data %>%
   filter(living_dead == "L", !is.na(dbh)) %>%
   group_by(plot) %>%
   summarise(average_dbh_in = round(mean(dbh) / 2.54, 2))
 
 # Step 4: Average height (ft)
-average_height <- input_data %>%
+average_height_ft <- input_data %>%
   filter(living_dead == "L", !is.na(total_height)) %>%
   group_by(plot) %>%
   summarise(average_height_ft = round(mean(total_height) * 3.28084, 2))
@@ -137,9 +137,14 @@ browse_damage_presence <- input_data %>%
 
 # Merge all outputs into one dataframe
 output_statistics_2022 <- Reduce(function(x, y) merge(x, y, by = "plot", all = TRUE), 
-                            list(basal_area, average_dbh, average_height, dominant_tree_species, 
+                            list(basal_area_per_acre_in, average_dbh_in, average_height_ft, dominant_tree_species, 
                                  regeneration_presence, seedlings_per_acre, dominant_regeneration_species,
                                  insect_damage_presence, browse_damage_presence))
+
+output_statistics_2022 <- output_statistics_2022 %>%
+  mutate(average_height_ft = ifelse(is.na(average_height_ft), "None", average_height_ft),
+         average_dbh_in = ifelse(is.na(average_dbh_in), "None", average_dbh_in),
+         dbh = ifelse(is.na(dbh), "yes", dbh))
 
 # Write output to CSV
 write.csv(output_statistics_2022, file = "/Users/harley/Documents/Github/Trinchera_summary/2022/2022_output_statistics.csv", row.names = FALSE)
