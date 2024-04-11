@@ -6,6 +6,15 @@ library(stringr)
 # Step 1: Read in raw/input CSV
 input_data <- read.csv("/Users/harley/Documents/Github/Trinchera_summary/2022/2024Updated_2022_ForestMont_MergedData.csv")
 
+#### TREATMENT STATISTICS ####
+
+# Step 2: Treatment year
+treatment_year <- input_data %>%
+  group_by(plot) %>%
+  summarise(treatment_year = ifelse(is.na(unique(treatment_year)) | unique(treatment_year) == 0, "Unknown", unique(treatment_year)))
+
+# Step 3: Treatment type
+
 #### TREE STATISTICS ####
 
 # Step 4: Basal area per acre (in)
