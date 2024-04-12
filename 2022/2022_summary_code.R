@@ -18,8 +18,12 @@ treatment_type <- input_data %>%
   mutate(treatment_type_long = tolower(treatment_type_long)) %>%
   mutate(
     treatment_type_long = gsub("retain healthy pipo and psme", "retain healthy ponderosa pine and douglas fir", treatment_type_long),
-    treatment_type_long = gsub("mastecation", "mastication", treatment_type_long)
-  ) %>%
+    treatment_type_long = gsub("mastecation", "mastication", treatment_type_long),
+    treatment_type_long = gsub("remove all abco & mistletoe", "remove all abco and mistletoe", treatment_type_long),
+    treatment_type_long = gsub("remove all white fir and mistletoe", "remove all abco and mistletoe", treatment_type_long),
+    treatment_type_long = gsub("remove all white fir and mistletoe trees", "remove all abco and mistletoe", treatment_type_long),
+    treatment_type_long = gsub("remove allwhite fir", "remove all abco", treatment_type_long)
+  ) %>%erw
   separate_rows(treatment_type_long, sep = ",") %>%
   mutate(
     treatment_type_long = trimws(treatment_type_long),
@@ -27,9 +31,14 @@ treatment_type <- input_data %>%
       treatment_type_long == "thin from below" ~ "bark",
       treatment_type_long == "retain healthy ponderosa pine and douglas fir" ~ "browse",
       treatment_type_long == "shelterwood" ~ "shelterwood",
-      treatment_type_long == "remove all abco & mistletoe" ~ "Douglas",
+      treatment_type_long == "remove all abco and mistletoe" ~ "Douglas",
       treatment_type_long == "mastication" ~ "mastication",
       treatment_type_long == "remove mistletoe" ~ "mistletoe",
+      treatment_type_long == "remove all abco" ~ "mistletoe",
+      treatment_type_long == "remove mistletoe" ~ "remove mistletoe",
+      treatment_type_long == "salvage" ~ "salvage",
+      treatment_type_long == "remove" ~ "mistletoe",
+      treatment_type_long == "remove" ~ "mistletoe",
       TRUE ~ NA_character
     )
   ) %>%
