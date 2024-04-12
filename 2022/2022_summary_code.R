@@ -6,6 +6,9 @@ library(stringr)
 # Step 1: Read in raw/input CSV
 input_data <- read.csv("/Users/harley/Documents/Github/Trinchera_summary/2022/2024Updated_2022_ForestMont_MergedData.csv")
 
+unique_treatments <- unique(input_data$short_description_of_treament)
+print(unique_treatments)
+
 #### TREATMENT STATISTICS ####
 
 # Step 2: Treatment year
@@ -14,6 +17,34 @@ treatment_year <- input_data %>%
   summarise(treatment_year = ifelse(is.na(unique(treatment_year)) | unique(treatment_year) == 0, "Unknown", unique(treatment_year)))
 
 # Step 3: Treatment type
+treatment_type <- input_data %>%
+  mutate(treatment_type_long = tolower(treatment_type_long)) %>%
+  mutate(treatment_type_long = gsub("retain healthy pipo and psme", "retain healthy ponderosa pine and douglas fir", treatment_type_long)) %>%
+  mutate(treatment_type_long = gsub("mastecation", "mastication", treatment_type_long)) %>%
+  separate_rows(treatment_type_long, sep = ",") %>%
+  mutate(treatment_type_long = trimws(treatment_type_long)) %>%
+  mutate(treatment_type_long = case_when(
+    treatment_type_long == "barkbeetle" ~ "bark beetle",
+    treatment_type_long == "browse" ~ "browse",
+    treatment_type_long == "canker" ~ "canker",
+    treatment_type_long == "douglasfiradelgid" ~ "Douglas fir adelgid",
+    treatment_type_long == "fungus" ~ "fungus",
+    treatment_type_long == "mistletoe" ~ "mistletoe",
+    treatment_type_long == "galls" ~ "galls",
+    treatment_type_long == "gash" ~ "gash",
+    treatment_type_long == "mechanicaldamage" ~ "mechanical damage",
+    treatment_type_long == "sapsucker" ~ "sapsucker",
+    treatment_type_long == "sprucebudworm" ~ "spruce budworm",
+    treatment_type_long == "winddamage" ~ "wind damage",
+    treatment_type_long == "woodpecker" ~ "woodpecker",
+    treatment_type_long == "rot" ~ "rot",
+    TRUE ~ NA_character_
+  )) %>%
+  distinct(plot, treatment_type_long) %>%
+  group_by(plot) %>%
+  summarise(treatment_type = if_else(all(treatment_type_long %in% c("unknown", NA)), "Unknown", paste(sort(na.omit(treatment_type_long)), collapse = ", "))) %>%
+  mutate(treatment_type = str_to_sentence(treatment_type, locale="en")) %>%
+  mutate(treatment_type = gsub("douglas", "Douglas", treatment_type))
 
 #### TREE STATISTICS ####
 

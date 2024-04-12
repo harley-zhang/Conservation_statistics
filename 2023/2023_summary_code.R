@@ -14,6 +14,17 @@ treatment_year <- input_data %>%
   summarise(treatment_year = ifelse(is.na(unique(treatment_year)) | unique(treatment_year) == 0, "Unknown", unique(treatment_year)))
 
 # Step 3: Treatment type
+treatment_type <- input_data %>%
+  separate_rows(short_description_of_treament, sep = ",") %>%
+  mutate(short_description_of_treament = trimws(short_description_of_treament)) %>%
+  mutate(short_description_of_treament = case_when(
+    short_description_of_treament == "THIN_FROM_BELOW" ~ "thin from below",
+    TRUE ~ NA_character_
+  )) %>%
+  distinct(new_plot_key, short_description_of_treament) %>%
+  group_by(new_plot_key) %>%
+  summarise(treatment_type = if_else(all(short_description_of_treament %in% c("UNKNOWN", NA)), "Unknown", paste(sort(na.omit(short_description_of_treament)), collapse = ", "))) %>%
+  mutate(treatment_type = str_to_sentence(treatment_type, locale="en"))
 
 #### TREE STATISTICS ####
 
