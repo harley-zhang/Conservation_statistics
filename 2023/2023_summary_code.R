@@ -11,7 +11,7 @@ input_data <- read.csv("/Users/harley/Documents/Github/Trinchera_summary/2023/cl
 # Step 2: Treatment year
 treatment_year <- input_data %>%
   group_by(new_plot_key) %>%
-  summarise(treatment_year = ifelse(is.na(unique(treatment_year)) | unique(treatment_year) == 0, "Unknown", as.character(unique(treatment_year))))
+  summarise(treatment_year = ifelse(is.na(unique(treatment_year)) | unique(treatment_year) == 0, "Unknown", unique(treatment_year)))
 
 # Step 3: Treatment type
 
