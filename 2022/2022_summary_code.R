@@ -26,19 +26,11 @@ treatment_type <- input_data %>%
     treatment_type_long = case_when(
       treatment_type_long == "thin from below" ~ "bark",
       treatment_type_long == "retain healthy ponderosa pine and douglas fir" ~ "browse",
-      treatment_type_long == "canker" ~ "canker",
-      treatment_type_long == "douglasfiradelgid" ~ "Douglas",
-      treatment_type_long == "fungus" ~ "fungus",
-      treatment_type_long == "mistletoe" ~ "mistletoe",
-      treatment_type_long == "galls" ~ "galls",
-      treatment_type_long == "gash" ~ "gash",
-      treatment_type_long == "mechanicaldamage" ~ "mechanical",
-      treatment_type_long == "sapsucker" ~ "sapsucker",
-      treatment_type_long == "sprucebudworm" ~ "spruce",
-      treatment_type_long == "winddamage" ~ "wind",
-      treatment_type_long == "woodpecker" ~ "woodpecker",
-      treatment_type_long == "rot" ~ "rot",
-      TRUE ~ NA_character_
+      treatment_type_long == "shelterwood" ~ "shelterwood",
+      treatment_type_long == "remove all abco & mistletoe" ~ "Douglas",
+      treatment_type_long == "mastication" ~ "mastication",
+      treatment_type_long == "remove mistletoe" ~ "mistletoe",
+      TRUE ~ NA_character
     )
   ) %>%
   distinct(plot, treatment_type_long) %>%
@@ -47,8 +39,7 @@ treatment_type <- input_data %>%
     treatment_type = if_else(all(treatment_type_long %in% c("unknown", NA)), "Unknown", paste(sort(na.omit(treatment_type_long)), collapse = ", "))
   ) %>%
   mutate(
-    treatment_type = str_to_sentence(treatment_type, locale="en"),
-    treatment_type = gsub("douglas", "Douglas", treatment_type)
+    treatment_type = str_to_sentence(treatment_type, locale="en")
   )
 
 #### TREE STATISTICS ####
