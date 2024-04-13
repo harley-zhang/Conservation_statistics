@@ -196,7 +196,7 @@ list_damage <- input_data %>%
   )
 
 # Step 14: Merge all outputs into one dataframe
-output_statistics_2023 <- Reduce(function(x, y) merge(x, y, by = "plot", all = TRUE), 
+output_summary_2023 <- Reduce(function(x, y) merge(x, y, by = "plot", all = TRUE), 
                             list(treatment_year, treatment_type, basal_area_per_acre_in, average_dbh_in, average_height_ft, dominant_tree_species, 
                                  regeneration_presence, seedlings_per_acre, dominant_regeneration_species,
                                  insect_damage_presence, browse_damage_presence, list_damage))
