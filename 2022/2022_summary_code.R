@@ -19,11 +19,13 @@ treatment_type <- input_data %>%
     treatment_type_long = gsub("retain healthy pipo and psme", "retain healthy ponderosa pine and douglas fir", treatment_type_long),
     treatment_type_long = gsub("retain healthly pp and df", "retain healthy ponderosa pine and douglas fir", treatment_type_long),
     treatment_type_long = gsub("mastecation", "mastication", treatment_type_long),
+    treatment_type_long = gsub("shelterwoood", "shelterwood", treatment_type_long),
     treatment_type_long = gsub("remove all abco & mistletoe", "remove all abco and mistletoe", treatment_type_long),
     treatment_type_long = gsub("remove all white fir and mistletoe", "remove all abco and mistletoe", treatment_type_long),
     treatment_type_long = gsub("remove all white fir and mistletoe trees", "remove all abco and mistletoe", treatment_type_long),
-    treatment_type_long = gsub("heavy budworm damage with topped psme and abco", "heavy budworm damage w/deadtopped df & wf", treatment_type_long)
-  ) #%>%
+    treatment_type_long = gsub("heavy budworm damage with topped psme and abco", "heavy budworm damage w/deadtopped df & wf", treatment_type_long),
+    treatment_type_long = gsub("remove almost all conifer from the riparian area and retain cw/as", "remove almost all conifer from riparian areas and retain pode and potr", treatment_type_long),
+  ) %>%
   separate_rows(treatment_type_long, sep = ",") %>%
   mutate(
     treatment_type_long = trimws(treatment_type_long),
@@ -41,10 +43,12 @@ treatment_type <- input_data %>%
       treatment_type_long == "retain aspen, ponderosa pine, and young df" ~ "retain aspen, ponderosa pine, and young douglas fir",
       treatment_type_long == "2010: heavy blowndown" ~ "heavy blowndown (2010)",
       treatment_type_long == "drainage with dead topped psme and abco" ~ "drainage with dead topped douglas fir and white fir",
-      treatment_type_long == "asdsssss" ~ "ssssss",
-      treatment_type_long == "asdsssss" ~ "ssssss",
-      treatment_type_long == "asdsssss" ~ "ssssss",
-      TRUE ~ NA_character
+      treatment_type_long == "remove all white fir and doug fir <14\" dbh and large if sufficient seed trees in the area" ~ "remove all white fir and douglas fir with a dbh of ≤14 inches and large if sufficient seed trees in the area",
+      treatment_type_long == "remove all defigured abco with 14\" dbh and larger if sufficent seed trees in area" ~ "remove all defigured white fir with a dbh of >14 inches if sufficent seed trees in area",
+      treatment_type_long == "remove almost all conifer from riparian areas and retain pode and potr" ~ "remove almost all conifer from riparian areas and retain cottonwood and aspen",
+      treatment_type_long == "in cleanup portion remove white fir and cbs and mistletoe pp" ~ "ssssss",
+      treatment_type_long == "in the cleanup portion remove abco, pipu, and pipo with mistletoe" ~ "ssaassss",
+      TRUE ~ NA_character_
     )
   ) %>%
   distinct(plot, treatment_type_long) %>%
@@ -55,7 +59,8 @@ treatment_type <- input_data %>%
   mutate(
     treatment_type = str_to_sentence(treatment_type, locale="en"),
     treatment_type = gsub("douglas", "Douglas", treatment_type),
-    treatment_type = gsub("rocky mountain", "Rocky Mountain", treatment_type)
+    treatment_type = gsub("rocky mountain", "Rocky Mountain", treatment_type),
+    treatment_type = gsub("dbh", "DBH", treatment_type)
   )
 
 #### TREE STATISTICS ####
