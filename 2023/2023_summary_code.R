@@ -186,7 +186,7 @@ list_damage <- input_data %>%
   distinct(new_plot_key, what_if_any_disease_damage_present) %>%
   group_by(new_plot_key) %>%
   summarise(
-    list_damage = if_else(all(what_if_any_disease_damage_present %in% c("n", "none", NA)), "None", paste(sort(na.omit(what_if_any_disease_damage_present)), collapse = ", "))
+    list_damage = if_else(all(what_if_any_disease_damage_present %in% NA), "None", paste(sort(na.omit(what_if_any_disease_damage_present)), collapse = ", "))
   ) %>%
   mutate(
     list_damage = str_to_sentence(list_damage, locale="en"),
