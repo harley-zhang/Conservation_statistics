@@ -15,30 +15,35 @@ treatment_year <- input_data %>%
 
 # Step 3: Treatment type
 treatment_type <- input_data %>%
-  mutate(treatment_type_long = tolower(treatment_type_long)) %>%
   mutate(
     treatment_type_long = gsub("retain healthy pipo and psme", "retain healthy ponderosa pine and douglas fir", treatment_type_long),
+    treatment_type_long = gsub("retain healthly pp and df", "retain healthy ponderosa pine and douglas fir", treatment_type_long),
     treatment_type_long = gsub("mastecation", "mastication", treatment_type_long),
     treatment_type_long = gsub("remove all abco & mistletoe", "remove all abco and mistletoe", treatment_type_long),
     treatment_type_long = gsub("remove all white fir and mistletoe", "remove all abco and mistletoe", treatment_type_long),
     treatment_type_long = gsub("remove all white fir and mistletoe trees", "remove all abco and mistletoe", treatment_type_long),
-    treatment_type_long = gsub("remove allwhite fir", "remove all abco", treatment_type_long)
-  ) %>%erw
+    treatment_type_long = gsub("heavy budworm damage with topped psme and abco", "heavy budworm damage w/deadtopped df & wf", treatment_type_long)
+  ) #%>%
   separate_rows(treatment_type_long, sep = ",") %>%
   mutate(
     treatment_type_long = trimws(treatment_type_long),
     treatment_type_long = case_when(
-      treatment_type_long == "thin from below" ~ "bark",
-      treatment_type_long == "retain healthy ponderosa pine and douglas fir" ~ "browse",
+      treatment_type_long == "thin from below" ~ "thin from below",
+      treatment_type_long == "retain healthy ponderosa pine and douglas fir" ~ "retain healthy ponderosa pine and douglas fir",
       treatment_type_long == "shelterwood" ~ "shelterwood",
-      treatment_type_long == "remove all abco and mistletoe" ~ "Douglas",
+      treatment_type_long == "remove all abco and mistletoe" ~ "remove all white fir and mistletoe",
       treatment_type_long == "mastication" ~ "mastication",
-      treatment_type_long == "remove mistletoe" ~ "mistletoe",
-      treatment_type_long == "remove all abco" ~ "mistletoe",
-      treatment_type_long == "remove mistletoe" ~ "remove mistletoe",
+      treatment_type_long == "remove mistletoe" ~ "remove all mistletoe",
+      treatment_type_long == "remove all abco" ~ "remove all white fir",
       treatment_type_long == "salvage" ~ "salvage",
-      treatment_type_long == "remove" ~ "mistletoe",
-      treatment_type_long == "remove" ~ "mistletoe",
+      treatment_type_long == "remove allwhite fir, rmj,andlargepoorly formed df" ~ "remove all white fir, rocky mountain juniper, and large poorly formed douglas fir",
+      treatment_type_long == "heavy budworm damage w/deadtopped df & wf" ~ "heavy budworm damage with dead topped douglas fir and white fir",
+      treatment_type_long == "retain aspen, ponderosa pine, and young df" ~ "retain aspen, ponderosa pine, and young douglas fir",
+      treatment_type_long == "2010: heavy blowndown" ~ "heavy blowndown (2010)",
+      treatment_type_long == "drainage with dead topped psme and abco" ~ "drainage with dead topped douglas fir and white fir",
+      treatment_type_long == "asdsssss" ~ "ssssss",
+      treatment_type_long == "asdsssss" ~ "ssssss",
+      treatment_type_long == "asdsssss" ~ "ssssss",
       TRUE ~ NA_character
     )
   ) %>%
@@ -48,7 +53,9 @@ treatment_type <- input_data %>%
     treatment_type = if_else(all(treatment_type_long %in% c("unknown", NA)), "Unknown", paste(sort(na.omit(treatment_type_long)), collapse = ", "))
   ) %>%
   mutate(
-    treatment_type = str_to_sentence(treatment_type, locale="en")
+    treatment_type = str_to_sentence(treatment_type, locale="en"),
+    treatment_type = gsub("douglas", "Douglas", treatment_type),
+    treatment_type = gsub("rocky mountain", "Rocky Mountain", treatment_type)
   )
 
 #### TREE STATISTICS ####
