@@ -41,7 +41,7 @@ treatment_type <- input_data %>%
   mutate(
     treatment_type_long = trimws(treatment_type_long),
     treatment_type_long = case_when(
-      treatment_type_long == "2010heavyblowndown" ~ "heavy blowndown (2010)",
+      treatment_type_long == "2010heavyblowndown" ~ "heavy blow down (2010)",
       treatment_type_long == "drainagewithdeadtoppedpsmeandabco" ~ "drainage with dead topped douglas fir and white fir",
       treatment_type_long == "heavybudwormdamagewithdeadtoppeddfandwf" ~ "heavy budworm damage with dead topped douglas fir and white fir",
       treatment_type_long == "inthecleanupportionremoveabco,pipu,andpipowithmistletoe" ~ "in the cleanup portion, remove white fir, pipu, and ponderosa pine with mistletoe",
@@ -203,12 +203,12 @@ browse_damage_presence <- input_data %>%
   summarise(browse_damage_presence = ifelse(any(browsing_damage == 1), "Browse present", "Browse absent"))
 
 # Step 13: Merge all outputs into one dataframe
-output_statistics_2022 <- Reduce(function(x, y) merge(x, y, by = "plot", all = TRUE), 
+output_summary_2022 <- Reduce(function(x, y) merge(x, y, by = "plot", all = TRUE), 
                             list(treatment_year, treatment_type, basal_area_per_acre_in, average_dbh_in, average_height_ft, dominant_tree_species, 
                                  regeneration_presence, seedlings_per_acre, dominant_regeneration_species,
                                  insect_damage_presence, browse_damage_presence))
 
-output_statistics_2022 <- output_statistics_2022 %>%
+output_summary_2022 <- output_summary_2022 %>%
   mutate(basal_area_per_acre_in = ifelse(is.na(basal_area_per_acre_in), "No live adult trees present", basal_area_per_acre_in),
          average_dbh_in = ifelse(is.na(average_dbh_in), "No live adult trees present", average_dbh_in),
          average_height_ft = ifelse(is.na(average_height_ft), "No live adult trees present", average_height_ft),
