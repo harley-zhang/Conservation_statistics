@@ -16,45 +16,51 @@ treatment_year <- input_data %>%
 # Step 3: Treatment type
 treatment_type <- input_data %>%
   mutate(
-    treatment_type_long = gsub("retain healthy pipo and psme", "retain healthy ponderosa pine and douglas fir", treatment_type_long),
-    treatment_type_long = gsub("retain healthly pp and df", "retain healthy ponderosa pine and douglas fir", treatment_type_long),
+    treatment_type_long = tolower(treatment_type_long),
+    treatment_type_long = gsub("\\s+", "", treatment_type_long),
+    treatment_type_long = gsub("retainhealthypipoandpsme", "retainhealthyponderosapineanddouglasfir", treatment_type_long),
+    treatment_type_long = gsub("retainhealthlyppanddf", "retainhealthyponderosapineanddouglasfir", treatment_type_long),
     treatment_type_long = gsub("mastecation", "mastication", treatment_type_long),
     treatment_type_long = gsub("shelterwoood", "shelterwood", treatment_type_long),
-    treatment_type_long = gsub("remove all abco & mistletoe", "remove all abco and mistletoe", treatment_type_long),
-    treatment_type_long = gsub("remove all white fir and mistletoe", "remove all abco and mistletoe", treatment_type_long),
-    treatment_type_long = gsub("remove all white fir and mistletoe trees", "remove all abco and mistletoe", treatment_type_long),
-    treatment_type_long = gsub("heavy budworm damage with topped psme and abco", "heavy budworm damage w/deadtopped df & wf", treatment_type_long),
-    treatment_type_long = gsub("remove almost all conifer from the riparian area and retain cw/as", "remove almost all conifer from riparian areas and retain pode and potr", treatment_type_long),
+    treatment_type_long = gsub("removeallabco&mistletoe", "removeallabcoandmistletoe", treatment_type_long),
+    treatment_type_long = gsub("removeallwhitefirandmistletoe", "removeallabcoandmistletoe", treatment_type_long),
+    treatment_type_long = gsub("removeallabcoandmistletoetrees", "removeallabcoandmistletoe", treatment_type_long),
+    treatment_type_long = gsub("heavybudwormdamagewithtoppedpsmeandabco", "heavybudwormdamagewithdeadtoppeddfandwf", treatment_type_long),
+    treatment_type_long = gsub("removealmostallconiferfromtheriparianareaandretaincw/as", "removealmostallconiferfromriparianareasandretainpodeandpotr", treatment_type_long),
+    treatment_type_long = gsub("incleanupportionremovewhitefirandcbsandmistletoepp", "inthecleanupportionremoveabco,pipu,andpipowithmistletoe", treatment_type_long),
+    treatment_type_long = gsub("w/", "with", treatment_type_long),
+    treatment_type_long = gsub("[./]", ",", treatment_type_long),
+    treatment_type_long = gsub("&", "and", treatment_type_long),
+    treatment_type_long = gsub(":", "", treatment_type_long),
   ) %>%
   separate_rows(treatment_type_long, sep = ",") %>%
   mutate(
     treatment_type_long = trimws(treatment_type_long),
     treatment_type_long = case_when(
-      treatment_type_long == "thin from below" ~ "thin from below",
-      treatment_type_long == "retain healthy ponderosa pine and douglas fir" ~ "retain healthy ponderosa pine and douglas fir",
-      treatment_type_long == "shelterwood" ~ "shelterwood",
-      treatment_type_long == "remove all abco and mistletoe" ~ "remove all white fir and mistletoe",
+      treatment_type_long == "2010heavyblowndown" ~ "heavy blowndown (2010)",
+      treatment_type_long == "drainagewithdeadtoppedpsmeandabco" ~ "drainage with dead topped douglas fir and white fir",
+      treatment_type_long == "heavybudwormdamagewithdeadtoppeddfandwf" ~ "heavy budworm damage with dead topped douglas fir and white fir",
+      treatment_type_long == "inthecleanupportionremoveabco,pipu,andpipowithmistletoe" ~ "in the cleanup portion, remove white fir, pipu, and ponderosa pine with mistletoe",
       treatment_type_long == "mastication" ~ "mastication",
-      treatment_type_long == "remove mistletoe" ~ "remove all mistletoe",
-      treatment_type_long == "remove all abco" ~ "remove all white fir",
+      treatment_type_long == "removeabco" ~ "remove all white fir",
+      treatment_type_long == "removeallabcoandmistletoe" ~ "remove all white fir and mistletoe",
+      treatment_type_long == "removeallwhitefir,rmj,andlargepoorlyformeddf" ~ "remove all whitefir, rocky mountain juniper, and large poorly formed douglas fir",
+      treatment_type_long == "removeallwhitefiranddougfir<14\"dbhandlargeifsufficientseedtreesinthearea" ~ "remove all white fir and douglas fir with <14\" dbh and large if sufficient seed trees in the area",
+      treatment_type_long == "removealldefiguredabcowith14\"dbhandlargerifsufficentseedtreesinarea" ~ "remove all defigured white fir with ≥14\" dbh if sufficent seed trees in area",
+      treatment_type_long == "removealmostallconiferfromriparianareasandretainpodeandpotr" ~ "remove almost all conifer from riparian areas and retain cottonwood and aspen",
+      treatment_type_long == "removemistletoe" ~ "remove all mistletoe",
+      treatment_type_long == "retainaspen,ponderosapine,andyoungdf" ~ "retain aspen, ponderosa pine, and young douglas fir",
+      treatment_type_long == "retainhealthyponderosapineanddouglasfir" ~ "retain healthy ponderosa pine and douglas fir",
       treatment_type_long == "salvage" ~ "salvage",
-      treatment_type_long == "remove allwhite fir, rmj,andlargepoorly formed df" ~ "remove all white fir, rocky mountain juniper, and large poorly formed douglas fir",
-      treatment_type_long == "heavy budworm damage w/deadtopped df & wf" ~ "heavy budworm damage with dead topped douglas fir and white fir",
-      treatment_type_long == "retain aspen, ponderosa pine, and young df" ~ "retain aspen, ponderosa pine, and young douglas fir",
-      treatment_type_long == "2010: heavy blowndown" ~ "heavy blowndown (2010)",
-      treatment_type_long == "drainage with dead topped psme and abco" ~ "drainage with dead topped douglas fir and white fir",
-      treatment_type_long == "remove all white fir and doug fir <14\" dbh and large if sufficient seed trees in the area" ~ "remove all white fir and douglas fir with a dbh of ≤14 inches and large if sufficient seed trees in the area",
-      treatment_type_long == "remove all defigured abco with 14\" dbh and larger if sufficent seed trees in area" ~ "remove all defigured white fir with a dbh of >14 inches if sufficent seed trees in area",
-      treatment_type_long == "remove almost all conifer from riparian areas and retain pode and potr" ~ "remove almost all conifer from riparian areas and retain cottonwood and aspen",
-      treatment_type_long == "in cleanup portion remove white fir and cbs and mistletoe pp" ~ "ssssss",
-      treatment_type_long == "in the cleanup portion remove abco, pipu, and pipo with mistletoe" ~ "ssaassss",
+      treatment_type_long == "shelterwood" ~ "shelterwood",
+      treatment_type_long == "thinfrombelow" ~ "thin from below",
       TRUE ~ NA_character_
     )
   ) %>%
   distinct(plot, treatment_type_long) %>%
   group_by(plot) %>%
   summarise(
-    treatment_type = if_else(all(treatment_type_long %in% c("unknown", NA)), "Unknown", paste(sort(na.omit(treatment_type_long)), collapse = ", "))
+    treatment_type = if_else(all(treatment_type_long %in% NA), "Unknown", paste(sort(na.omit(treatment_type_long)), collapse = "; "))
   ) %>%
   mutate(
     treatment_type = str_to_sentence(treatment_type, locale="en"),
