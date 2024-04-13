@@ -203,12 +203,12 @@ browse_damage_presence <- input_data %>%
   summarise(browse_damage_presence = ifelse(any(browsing_damage == 1), "Browse present", "Browse absent"))
 
 # Step 13: Merge all outputs into one dataframe
-output_summary_2022 <- Reduce(function(x, y) merge(x, y, by = "plot", all = TRUE), 
+summary_2022 <- Reduce(function(x, y) merge(x, y, by = "plot", all = TRUE), 
                             list(treatment_year, treatment_type, basal_area_per_acre_in, average_dbh_in, average_height_ft, dominant_tree_species, 
                                  regeneration_presence, seedlings_per_acre, dominant_regeneration_species,
                                  insect_damage_presence, browse_damage_presence))
 
-output_summary_2022 <- output_summary_2022 %>%
+summary_2022 <- summary_2022 %>%
   mutate(basal_area_per_acre_in = ifelse(is.na(basal_area_per_acre_in), "No live adult trees present", basal_area_per_acre_in),
          average_dbh_in = ifelse(is.na(average_dbh_in), "No live adult trees present", average_dbh_in),
          average_height_ft = ifelse(is.na(average_height_ft), "No live adult trees present", average_height_ft),
@@ -216,4 +216,4 @@ output_summary_2022 <- output_summary_2022 %>%
          regeneration_presence = ifelse(is.na(regeneration_presence), "Regeneration absent", regeneration_presence))
 
 # Step 14: Write output to CSV
-write.csv(output_summary_2022, file = "/Users/harley/Documents/Github/Trinchera_summary/plot_stats/2022/2022_output_summary.csv", row.names = FALSE)
+write.csv(summary_2022, file = "/Users/harley/Documents/Github/Trinchera_summary/plot_stats/2022/2022_summary.csv", row.names = FALSE)

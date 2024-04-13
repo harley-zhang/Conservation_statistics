@@ -196,10 +196,10 @@ list_damage <- input_data %>%
   )
 
 # Step 14: Merge all outputs into one dataframe
-output_summary_2023 <- Reduce(function(x, y) merge(x, y, by = "plot", all = TRUE), 
+summary_2023 <- Reduce(function(x, y) merge(x, y, by = "plot", all = TRUE), 
                             list(treatment_year, treatment_type, basal_area_per_acre_in, average_dbh_in, average_height_ft, dominant_tree_species, 
                                  regeneration_presence, seedlings_per_acre, dominant_regeneration_species,
                                  insect_damage_presence, browse_damage_presence, list_damage))
 
 # Step 15: Write output to CSV
-write.csv(output_summary_2023, file = "/Users/harley/Documents/Github/Trinchera_summary/plot_stats/2023/2023_output_summary.csv", row.names = FALSE)
+write.csv(summary_2023, file = "/Users/harley/Documents/Github/Trinchera_summary/plot_stats/2023/2023_summary.csv", row.names = FALSE)
