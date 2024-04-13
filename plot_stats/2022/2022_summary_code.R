@@ -6,6 +6,9 @@ library(stringr)
 # Step 1: Read in raw/input CSV
 input_data <- read.csv("/Users/harley/Documents/Github/Trinchera_summary/plot_stats/2022/2024Updated_2022_ForestMont_MergedData.csv")
 
+input_data <- input_data %>%
+  mutate(plot = paste0(plot, "_2022"))
+
 #### TREATMENT STATISTICS ####
 
 # Step 2: Treatment year
