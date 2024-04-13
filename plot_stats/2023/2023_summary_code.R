@@ -4,7 +4,7 @@ library(tidyr)
 library(stringr)
 
 # Step 1: Read in raw/input CSV
-input_data <- read.csv("/Users/harley/Documents/Github/Trinchera_summary/2023/cleanedMerged_Forestry23_030524_2.csv")
+input_data <- read.csv("/Users/harley/Documents/Github/Trinchera_summary/plot_stats/2023/cleanedMerged_Forestry23_030524_2.csv")
 
 #### TREATMENT STATISTICS ####
 
