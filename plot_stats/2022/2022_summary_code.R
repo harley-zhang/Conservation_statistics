@@ -11,7 +11,7 @@ input_data <- read.csv("/Users/harley/Documents/Github/Trinchera_summary/plot_st
 # Step 2: Treatment year
 treatment_year <- input_data %>%
   group_by(plot) %>%
-  summarise(treatment_year = ifelse(is.na(unique(treatment_year)) | unique(treatment_year) == 0, "Unknown", unique(treatment_year)))
+  summarise(treatment_year = ifelse(is.na(unique(treatment_year)) | unique(treatment_year) == 0, "Unknown", as.character(unique(treatment_year))))
 
 # Step 3: Treatment type
 ## *NOTE*: before this step, go into the input_data CSV and remove special character in front of "pipu"'s and change remove all abco to remove abco
@@ -213,4 +213,4 @@ output_statistics_2022 <- output_statistics_2022 %>%
          regeneration_presence = ifelse(is.na(regeneration_presence), "Regeneration absent", regeneration_presence))
 
 # Step 14: Write output to CSV
-write.csv(output_statistics_2022, file = "/Users/harley/Documents/Github/Trinchera_summary/2022/2022_output_statistics.csv", row.names = FALSE)
+write.csv(output_statistics_2022, file = "/Users/harley/Documents/Github/Trinchera_summary/plot_stats/2022/2022_output_statistics.csv", row.names = FALSE)
