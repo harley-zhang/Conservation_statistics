@@ -216,4 +216,4 @@ output_statistics_2022 <- output_statistics_2022 %>%
          regeneration_presence = ifelse(is.na(regeneration_presence), "Regeneration absent", regeneration_presence))
 
 # Step 14: Write output to CSV
-write.csv(output_statistics_2022, file = "/Users/harley/Documents/Github/Trinchera_summary/plot_stats/2022/2022_output_statistics.csv", row.names = FALSE)
+write.csv(output_summary_2022, file = "/Users/harley/Documents/Github/Trinchera_summary/plot_stats/2022/2022_output_summary.csv", row.names = FALSE)
