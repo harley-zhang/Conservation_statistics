@@ -23,7 +23,7 @@ treatment_type <- input_data %>%
   )) %>%
   distinct(new_plot_key, short_description_of_treament) %>%
   group_by(new_plot_key) %>%
-  summarise(treatment_type = if_else(all(short_description_of_treament %in% c("UNKNOWN", NA)), "Unknown", paste(sort(na.omit(short_description_of_treament)), collapse = ", "))) %>%
+  summarise(treatment_type = if_else(all(short_description_of_treament %in% NA), "Unknown", paste(sort(na.omit(short_description_of_treament)), collapse = "; "))) %>%
   mutate(treatment_type = str_to_sentence(treatment_type, locale="en"))
 
 #### TREE STATISTICS ####
