@@ -57,7 +57,7 @@ regeneration_presence <- summary_merged %>%
 average_seedlings_per_acre <- summary_merged %>%
   filter(!is.na(stand)) %>%
   group_by(stand) %>%
-  mutate(seedlings_per_acre = as.integer(seedlings_per_acre)) %>%
+  mutate(seedlings_per_acre = as.double(seedlings_per_acre)) %>%
   summarise(average_seedlings_per_acre = round(mean(seedlings_per_acre), 2))
 
 #### DAMAGE STATISTICS ####
