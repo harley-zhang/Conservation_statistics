@@ -203,3 +203,4 @@ summary_2023 <- Reduce(function(x, y) merge(x, y, by = "plot", all = TRUE),
 
 # Step 15: Write output to CSV
 write.csv(summary_2023, file = "/Users/harley/Documents/Github/Trinchera_summary/plot_stats/2023/2023_summary.csv", row.names = FALSE)
+
