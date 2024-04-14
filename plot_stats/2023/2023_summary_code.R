@@ -6,8 +6,11 @@ library(stringr)
 # Step 1: Read in raw/input CSV
 input_data <- read.csv("/Users/harley/Documents/Github/Trinchera_summary/plot_stats/2023/cleanedMerged_Forestry23_030524_2.csv")
 
+# Rename `new_plot_key` to `plot` (to match 2022)
 input_data <- input_data %>%
   rename(plot = new_plot_key)
+
+
 #### TREATMENT STATISTICS ####
 
 # Step 2: Treatment year
@@ -27,6 +30,7 @@ treatment_type <- input_data %>%
   group_by(plot) %>%
   summarise(treatment_type = if_else(all(short_description_of_treament %in% NA), "Unknown", paste(sort(na.omit(short_description_of_treament)), collapse = "; "))) %>%
   mutate(treatment_type = str_to_sentence(treatment_type, locale="en"))
+
 
 #### TREE STATISTICS ####
 
@@ -93,6 +97,7 @@ dominant_tree_species <- input_data %>%
     }
   })
 
+
 #### REGENERATION STATISTICS ####
 
 # Step 8: Regeneration presence (Y/N)
@@ -142,6 +147,7 @@ dominant_regeneration_species <- input_data %>%
   distinct(plot) %>%
   left_join(dominant_regeneration_species, by = "plot") %>%
   mutate(dominant_regeneration_species = ifelse(is.na(dominant_regeneration_species), "None", dominant_regeneration_species))
+
 
 #### DAMAGE STATISTICS ####
 
@@ -194,6 +200,9 @@ list_damage <- input_data %>%
     list_damage = str_to_sentence(list_damage, locale="en"),
     list_damage = gsub("douglas", "Douglas", list_damage)
   )
+
+
+#### MERGE TO CREATE SUMMARY ####
 
 # Step 14: Merge all outputs into one dataframe
 summary_2023 <- Reduce(function(x, y) merge(x, y, by = "plot", all = TRUE), 
