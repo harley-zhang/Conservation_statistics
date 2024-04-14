@@ -16,9 +16,8 @@ summary_2023 <- mutate_all(summary_2023, as.character)
 summary_merged <- bind_rows(summary_2022, summary_2023)
 
 # Step 4: Assign stands to each plot in the merged data frame
-summary_merged <- left_join(summary_merged, stand_plots, by = "plot") %>%
-  mutate(stand = if_else(is.na(stand), NA_character_, stand)) %>%
-  select(stand, everything())
+summary_merged <- right_join(stand_plots, summary_merged, by = "plot")
+
 
 #### TREE STATISTICS ####
 
@@ -46,6 +45,7 @@ average_height_ft <- summary_merged %>%
 # Step 8: Dominant tree species
 
 
+
 #### REGENERATION STATISTICS ####
 
 # Step 8: Regeneration presence (Y/N)
@@ -60,6 +60,7 @@ average_seedlings_per_acre <- summary_merged %>%
   group_by(stand) %>%
   mutate(seedlings_per_acre = as.double(seedlings_per_acre)) %>%
   summarise(average_seedlings_per_acre = round(mean(seedlings_per_acre), 2))
+
 
 #### DAMAGE STATISTICS ####
 
@@ -113,12 +114,13 @@ list_damage <- summary_merged %>%
   )
 
 
+#### MERGE TO CREATE SUMMARY ####
 
-# Step XX: Merge all outputs into one dataframe
+# Step 14: Merge all outputs into one dataframe
 stand_summary <- Reduce(function(x, y) merge(x, y, by = "stand", all = TRUE), 
                         list(average_basal_area_per_acre_in, average_dbh_in, average_height_ft, 
                              regeneration_presence, average_seedlings_per_acre,
                              insect_damage_presence, browse_damage_presence, list_damage))
 
-# Step XX: Write output to CSV
+# Step 15: Write output to CSV
 write.csv(stand_summary, file = "/Users/harley/Documents/Github/Trinchera_summary/stand_stats/stand_summary.csv", row.names = FALSE)

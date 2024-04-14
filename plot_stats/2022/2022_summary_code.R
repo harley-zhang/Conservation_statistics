@@ -9,6 +9,7 @@ input_data <- read.csv("/Users/harley/Documents/Github/Trinchera_summary/plot_st
 input_data <- input_data %>%
   mutate(plot = paste0(plot, "_2022"))
 
+
 #### TREATMENT STATISTICS ####
 
 # Step 2: Treatment year
@@ -72,6 +73,7 @@ treatment_type <- input_data %>%
     treatment_type = gsub("rocky mountain", "Rocky Mountain", treatment_type),
     treatment_type = gsub("dbh", "DBH", treatment_type)
   )
+
 
 #### TREE STATISTICS ####
 
@@ -138,6 +140,7 @@ dominant_tree_species <- input_data %>%
     }
   })
 
+
 #### REGENERATION STATISTICS ####
 
 # Step 8: Regeneration presence (Y/N)
@@ -188,6 +191,7 @@ dominant_regeneration_species <- input_data %>%
   left_join(dominant_regeneration_species, by = "plot") %>%
   mutate(dominant_regeneration_species = ifelse(is.na(dominant_regeneration_species), "None", dominant_regeneration_species))
 
+
 #### DAMAGE STATISTICS ####
 
 # Step 11: Insect presence (Y/N)
@@ -201,6 +205,9 @@ browse_damage_presence <- input_data %>%
   filter(!is.na(browsing_damage)) %>%
   group_by(plot) %>%
   summarise(browse_damage_presence = ifelse(any(browsing_damage == 1), "Browse present", "Browse absent"))
+
+
+#### MERGE TO CREATE SUMMARY ####
 
 # Step 13: Merge all outputs into one dataframe
 summary_2022 <- Reduce(function(x, y) merge(x, y, by = "plot", all = TRUE), 
