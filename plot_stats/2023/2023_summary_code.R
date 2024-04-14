@@ -18,11 +18,11 @@ treatment_year <- input_data %>%
 # Step 3: Treatment type
 treatment_type <- input_data %>%
   separate_rows(short_description_of_treament, sep = ",") %>%
-  mutate(short_description_of_treament = trimws(short_description_of_treament)) %>%
-  mutate(short_description_of_treament = case_when(
-    short_description_of_treament == "THIN_FROM_BELOW" ~ "thin from below",
-    TRUE ~ NA_character_
-  )) %>%
+  mutate(short_description_of_treament = trimws(short_description_of_treament),
+         short_description_of_treament = case_when(
+           short_description_of_treament == "THIN_FROM_BELOW" ~ "thin from below",
+           TRUE ~ NA_character_
+           )) %>%
   distinct(plot, short_description_of_treament) %>%
   group_by(plot) %>%
   summarise(treatment_type = if_else(all(short_description_of_treament %in% NA), "Unknown", paste(sort(na.omit(short_description_of_treament)), collapse = "; "))) %>%
@@ -114,19 +114,19 @@ dominant_regeneration_species <- input_data %>%
   group_by(plot, tree_species) %>%
   summarise(regeneration_count = sum(size_class == "sapling") + sum(ifelse(size_class == "seedling", number_of_seedlings, 0))) %>%
   group_by(plot) %>%
-  mutate(percent_frequency = regeneration_count / sum(regeneration_count) * 100) %>%
-  mutate(tree_species = case_when(
-    tree_species == "ABCO" ~ "White fir",
-    tree_species == "ABLA" ~ "Subalpine fir",
-    tree_species == "ACGL" ~ "Rocky Mountain maple",
-    tree_species == "JUSC" ~ "Rocky Mountain juniper",
-    tree_species == "PIED" ~ "Colorado pinyon",
-    tree_species == "PIEN" ~ "Engelmann spruce",
-    tree_species == "PIFL" ~ "Limber pine",
-    tree_species == "PIPO" ~ "Ponderosa pine",
-    tree_species == "POTR" ~ "Aspen",
-    tree_species == "PSME" ~ "Douglas fir",
-    TRUE ~ as.character(tree_species)
+  mutate(percent_frequency = regeneration_count / sum(regeneration_count) * 100,
+         tree_species = case_when(
+         tree_species == "ABCO" ~ "White fir",
+         tree_species == "ABLA" ~ "Subalpine fir",
+         tree_species == "ACGL" ~ "Rocky Mountain maple",
+         tree_species == "JUSC" ~ "Rocky Mountain juniper",
+         tree_species == "PIED" ~ "Colorado pinyon",
+         tree_species == "PIEN" ~ "Engelmann spruce",
+         tree_species == "PIFL" ~ "Limber pine",
+         tree_species == "PIPO" ~ "Ponderosa pine",
+         tree_species == "POTR" ~ "Aspen",
+         tree_species == "PSME" ~ "Douglas fir",
+         TRUE ~ as.character(tree_species)
   )) %>%
   arrange(desc(percent_frequency)) %>%
   summarise(dominant_regeneration_species = {
@@ -203,4 +203,3 @@ summary_2023 <- Reduce(function(x, y) merge(x, y, by = "plot", all = TRUE),
 
 # Step 15: Write output to CSV
 write.csv(summary_2023, file = "/Users/harley/Documents/Github/Trinchera_summary/plot_stats/2023/2023_summary.csv", row.names = FALSE)
-
