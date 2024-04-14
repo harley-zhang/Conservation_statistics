@@ -160,19 +160,19 @@ dominant_regeneration_species <- input_data %>%
   summarise(regeneration_count = sum(size_class == "sapling") + sum(ifelse(size_class == "seedling", count_seedling, 0))) %>%
   group_by(plot) %>%
   mutate(percent_frequency = regeneration_count / sum(regeneration_count) * 100,
-    species = case_when(
-    species == "ABCO" ~ "White fir",
-    species == "ABLA" ~ "Subalpine fir",
-    species == "ACGL" ~ "Rocky Mountain maple",
-    species == "JUSC" ~ "Rocky Mountain juniper",
-    species == "PIED" ~ "Colorado pinyon",
-    species == "PIEN" ~ "Engelmann spruce",
-    species == "PIFL" ~ "Limber pine",
-    species == "PIPO" ~ "Ponderosa pine",
-    species == "POTR" ~ "Aspen",
-    species == "PSME" ~ "Douglas fir",
-    TRUE ~ as.character(species)
-  )) %>%
+         species = case_when(
+           species == "ABCO" ~ "White fir",
+           species == "ABLA" ~ "Subalpine fir",
+           species == "ACGL" ~ "Rocky Mountain maple",
+           species == "JUSC" ~ "Rocky Mountain juniper",
+           species == "PIED" ~ "Colorado pinyon",
+           species == "PIEN" ~ "Engelmann spruce",
+           species == "PIFL" ~ "Limber pine",
+           species == "PIPO" ~ "Ponderosa pine",
+           species == "POTR" ~ "Aspen",
+           species == "PSME" ~ "Douglas fir",
+           TRUE ~ as.character(species)
+         )) %>%
   arrange(desc(percent_frequency)) %>%
   summarise(dominant_regeneration_species = {
     if (percent_frequency[1] <= 50) {
