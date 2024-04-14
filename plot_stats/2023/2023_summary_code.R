@@ -171,7 +171,7 @@ list_damage <- input_data %>%
       what_if_any_disease_damage_present == "barkbeetle" ~ "bark beetle",
       what_if_any_disease_damage_present == "browse" ~ "browse",
       what_if_any_disease_damage_present == "canker" ~ "canker",
-      what_if_any_disease_damage_present == "douglasfiradelgid" ~ "Douglas fir adelgid",
+      what_if_any_disease_damage_present == "douglasfiradelgid" ~ "douglas fir adelgid",
       what_if_any_disease_damage_present == "fungus" ~ "fungus",
       what_if_any_disease_damage_present == "mistletoe" ~ "mistletoe",
       what_if_any_disease_damage_present == "galls" ~ "galls",
