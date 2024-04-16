@@ -61,6 +61,8 @@ average_seedlings_per_acre <- summary_merged %>%
   mutate(seedlings_per_acre = as.double(seedlings_per_acre)) %>%
   summarise(average_seedlings_per_acre = round(mean(seedlings_per_acre), 2))
 
+# Step 10: Dominant regeneration species
+
 
 #### DAMAGE STATISTICS ####
 
