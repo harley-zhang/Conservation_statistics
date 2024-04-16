@@ -18,6 +18,33 @@ summary_merged <- bind_rows(summary_2022, summary_2023)
 # Step 4: Assign stands to each plot in the merged data frame
 summary_merged <- right_join(stand_plots, summary_merged, by = "plot")
 
+# Step 5: When there is a second species in `dominant_tree_species`, get rid of the second one unless same %
+remove_second_dom <- function(species) {
+  species_list <- strsplit(species, ",")[[1]]
+  if (length(species_list) == 1) {
+    return(species)
+  }
+  if (length(species_list) == 2) {
+    percent1 <- as.numeric(gsub("[^0-9.]", "", species_list[1]))
+    percent2 <- as.numeric(gsub("[^0-9.]", "", species_list[2]))
+    if (percent1 == percent2) {
+      return(species)
+    } else {
+      if (percent1 > percent2) {
+        return(species_list[1])
+      } else {
+        return(species_list[2])
+      }
+    }
+  }
+}
+
+summary_merged <- summary_merged %>%
+  mutate(
+    dominant_tree_species = sapply(dominant_tree_species, remove_second_dom),
+    dominant_regeneration_species = sapply(dominant_regeneration_species, remove_second_dom)
+  )
+
 
 #### TREE STATISTICS ####
 
