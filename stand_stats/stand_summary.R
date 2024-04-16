@@ -45,7 +45,6 @@ average_height_ft <- summary_merged %>%
 # Step 8: Dominant tree species
 
 
-
 #### REGENERATION STATISTICS ####
 
 # Step 8: Regeneration presence (Y/N)
