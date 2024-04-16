@@ -43,7 +43,10 @@ average_height_ft <- summary_merged %>%
   summarise(average_height_ft = round(mean(average_height_ft), 2))
 
 # Step 8: Dominant tree species
-
+ttt <- summary_2022 %>%
+  separate(dominant_tree_species, into = c("species1", "species2"), sep = ",", extra = "drop") %>%
+  separate(species1, into = c("species1", "percent1"), sep = "\\(") %>%
+  separate(species2, into = c("species2", "percent2"), sep = "\\(")
 
 #### REGENERATION STATISTICS ####
 
