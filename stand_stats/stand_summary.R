@@ -93,7 +93,7 @@ average_seedlings_per_acre <- summary_merged %>%
   summarise(average_seedlings_per_acre = round(mean(seedlings_per_acre), 2))
 
 # Step 10: Dominant regeneration species
-dom_tree <- summary_merged %>%
+dominant_tree_species <- summary_merged %>%
   filter(!is.na(stand)) %>%
   mutate(dominant_tree_species = str_extract_all(dominant_tree_species, "(Aspen|Douglas fir|Colorado Pinyon|Engelmann spruce|Limber pine|Ponderosa pine|Rocky Mountain juniper|Rocky Mountain maple|Subalpine fir|White fir|No live adult trees present)")) %>%
   group_by(stand) %>%
@@ -105,9 +105,11 @@ dom_tree <- summary_merged %>%
             total = unique(total)) %>%
   group_by(stand) %>%
   mutate(percent_frequency = occurrences / total) %>%
-  slice(which.max(occurrences)) %>%
-  mutate(dom_tree = paste0(dominant_tree_species, " ", occurrences, " plots, ", round(percent_frequency*100, 2), "% of plots")) %>%
-  select(stand, dom_tree)
+  mutate(dominant_tree_species = paste0(dominant_tree_species, ", ", occurrences, " plots, ", round(percent_frequency*100, 2), "% of plots")) %>%
+  mutate(rank = ifelse(dominant_tree_species == "No live adult trees present", occurrences - max(occurrences), occurrences)) %>%
+  group_by(stand) %>%
+  slice(which.max(rank)) %>%
+  select(stand, dominant_tree_species)
 
 
 #### DAMAGE STATISTICS ####
