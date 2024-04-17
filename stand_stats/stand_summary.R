@@ -9,8 +9,17 @@ summary_2023 <- read.csv("/Users/harley/Documents/Github/Trinchera_summary/plot_
 stand_plots <- read.csv("/Users/harley/Documents/Github/Trinchera_summary/stand_stats/stand_plots.csv")
 
 # Step 2: Convert data frames all to <character>
-summary_2022 <- mutate_all(summary_2022, as.character)
-summary_2023 <- mutate_all(summary_2023, as.character)
+summary_2022 <- summary_2022 %>%
+  mutate(treatment_year = as.character(treatment_year),
+         basal_area_per_acre_in = as.numeric(basal_area_per_acre_in),
+         average_dbh_in = as.numeric(average_dbh_in),
+         average_height_ft = as.numeric(average_height_ft))
+
+summary_2023 <- summary_2023 %>%
+  mutate(treatment_year = as.character(treatment_year),
+         basal_area_per_acre_in = as.numeric(basal_area_per_acre_in),
+         average_dbh_in = as.numeric(average_dbh_in),
+         average_height_ft = as.numeric(average_height_ft))
 
 # Step 3: Merge data frames
 summary_merged <- bind_rows(summary_2022, summary_2023)
@@ -50,30 +59,28 @@ summary_merged <- summary_merged %>%
 
 # Step 5: Average basal area per acre (in)
 average_basal_area_per_acre_in <- summary_merged %>%
-  filter(!is.na(stand), basal_area_per_acre_in != "No live adult trees present") %>%
+  filter(!is.na(stand)) %>%
   group_by(stand) %>%
   mutate(basal_area_per_acre_in = as.double(basal_area_per_acre_in)) %>%
   summarise(average_basal_area_per_acre_in = round(mean(basal_area_per_acre_in), 2))
 
 # Step 6: Average DBH (in)
 average_dbh_in <- summary_merged %>%
-  filter(!is.na(stand), average_dbh_in != "No live adult trees present") %>%
+  filter(!is.na(stand)) %>%
   group_by(stand) %>%
   mutate(average_dbh_in = as.double(average_dbh_in)) %>%
   summarise(average_dbh_in = round(mean(average_dbh_in), 2))
 
 # Step 7: Average height (ft)
 average_height_ft <- summary_merged %>%
-  filter(!is.na(stand), average_height_ft != "No live adult trees present") %>%
+  filter(!is.na(stand)) %>%
   group_by(stand) %>%
   mutate(average_height_ft = as.double(average_height_ft)) %>%
   summarise(average_height_ft = round(mean(average_height_ft), 2))
 
 # Step 8: Dominant tree species
-ttt <- summary_2022 %>%
-  separate(dominant_tree_species, into = c("species1", "species2"), sep = ",", extra = "drop") %>%
-  separate(species1, into = c("species1", "percent1"), sep = "\\(") %>%
-  separate(species2, into = c("species2", "percent2"), sep = "\\(")
+
+
 
 #### REGENERATION STATISTICS ####
 
