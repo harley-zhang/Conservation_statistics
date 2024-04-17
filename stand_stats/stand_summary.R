@@ -78,10 +78,21 @@ average_height_ft <- summary_merged %>%
 # Step 8: Dominant tree species
 dom_tree <- summary_merged %>%
   filter(!is.na(stand)) %>%
-  mutate(species_code = str_extract(dominant_tree_species, "\\b(?:ABCO|PSME|PIPO|PSJE|SLFK|SLDK|ASGH)\\b")) %>%
-  group_by(stand) %>%
-  summarise(most_common_species = names(which.max(table(species_code)))) %>%
-  select(dom_tree)
+  mutate(dominant_tree_species = tolower(gsub("[[:space:],[:digit:]%]", "", dominant_tree_species))) %>%
+  mutate(dom_tree_code = str_extract(dominant_tree_species, "(aspen|douglasfir|coloradopinyon|engelmannspruce|limberpine|ponderosapine|rockymountainjuniper|rockymountainmaple|subalpinefir|whitefir)")) %>%
+  mutate(dom_tree = case_when(
+    dom_tree_code == "aspen" ~ "Aspen",
+    dom_tree_code == "douglasfir" ~ "Douglas fir",
+    dom_tree_code == "engelmannspruce" ~ "Engelmann spruce",
+    dom_tree_code == "limberpine" ~ "Limber pine",
+    dom_tree_code == "ponderosapine" ~ "Ponderosa pine",
+    dom_tree_code == "rockymountainjuniper" ~ "Rocky Mountain juniper",
+    dom_tree_code == "rockymountainmaple" ~ "Rocky Mountain maple",
+    dom_tree_code == "subalpinefir" ~ "Subalpine fir",
+    dom_tree_code == "whitefir" ~ "White fir",
+    TRUE ~ NA_character_
+  ))
+
 
 #### REGENERATION STATISTICS ####
 
@@ -95,7 +106,6 @@ regeneration_presence <- summary_merged %>%
 average_seedlings_per_acre <- summary_merged %>%
   filter(!is.na(stand)) %>%
   group_by(stand) %>%
-  mutate(seedlings_per_acre = as.double(seedlings_per_acre)) %>%
   summarise(average_seedlings_per_acre = round(mean(seedlings_per_acre), 2))
 
 # Step 10: Dominant regeneration species
