@@ -216,9 +216,9 @@ summary_2022 <- Reduce(function(x, y) merge(x, y, by = "plot", all = TRUE),
                                  insect_damage_presence, browse_damage_presence))
 
 summary_2022 <- summary_2022 %>%
-  mutate(basal_area_per_acre_in = ifelse(is.na(basal_area_per_acre_in), "No live adult trees present", basal_area_per_acre_in),
-         average_dbh_in = ifelse(is.na(average_dbh_in), "No live adult trees present", average_dbh_in),
-         average_height_ft = ifelse(is.na(average_height_ft), "No live adult trees present", average_height_ft),
+  mutate(basal_area_per_acre_in = ifelse(is.na(basal_area_per_acre_in), "0.00", basal_area_per_acre_in),
+         average_dbh_in = ifelse(is.na(average_dbh_in), "0.00", average_dbh_in),
+         average_height_ft = ifelse(is.na(average_height_ft), "0.00", average_height_ft),
          dominant_tree_species = ifelse(is.na(dominant_tree_species), "No live adult trees present", dominant_tree_species),
          regeneration_presence = ifelse(is.na(regeneration_presence), "Regeneration absent", regeneration_presence))
 
