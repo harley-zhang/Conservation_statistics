@@ -76,23 +76,36 @@ average_height_ft <- summary_merged %>%
   summarise(average_height_ft = round(mean(average_height_ft), 2))
 
 # Step 8: Dominant tree species
-dom_tree <- summary_merged %>%
+dominant_species <- summary_merged %>%
   filter(!is.na(stand)) %>%
-  mutate(dominant_tree_species = tolower(gsub("[[:space:],[:digit:]%]", "", dominant_tree_species))) %>%
-  mutate(dom_tree_code = str_extract(dominant_tree_species, "(aspen|douglasfir|coloradopinyon|engelmannspruce|limberpine|ponderosapine|rockymountainjuniper|rockymountainmaple|subalpinefir|whitefir)")) %>%
-  mutate(dom_tree = case_when(
-    dom_tree_code == "aspen" ~ "Aspen",
-    dom_tree_code == "douglasfir" ~ "Douglas fir",
-    dom_tree_code == "engelmannspruce" ~ "Engelmann spruce",
-    dom_tree_code == "limberpine" ~ "Limber pine",
-    dom_tree_code == "ponderosapine" ~ "Ponderosa pine",
-    dom_tree_code == "rockymountainjuniper" ~ "Rocky Mountain juniper",
-    dom_tree_code == "rockymountainmaple" ~ "Rocky Mountain maple",
-    dom_tree_code == "subalpinefir" ~ "Subalpine fir",
-    dom_tree_code == "whitefir" ~ "White fir",
-    TRUE ~ NA_character_
-  ))
+  mutate(dominant_tree_species = str_extract_all(dominant_tree_species, "\\b(Aspen|Douglas fir|Colorado Pinyon|Engelmann spruce|Limber pine|Ponderosa pine|Rocky Mountain juniper|Rocky Mountain maple|Subalpine fir|White fir)\\b")) %>%
+  unnest(dominant_tree_species) %>%
+  count(stand, dominant_tree_species) %>%
+  group_by(stand) %>%
+  mutate(total_rows_stand = sum(n())) %>%
+  ungroup() %>%
+  group_by(dominant_tree_species) %>%
+  mutate(total_rows_species = sum(total_rows_stand)) %>%
+  mutate(percent_occurrence = n / total_rows_species * 100) %>%
+  mutate(dom_tree = paste0(dominant_tree_species, ", ", n, " plots, ", round(percent_occurrence, 2), "% of plots")) %>%
+  select(-n, -total_rows_stand, -total_rows_species)
 
+dominant_spes <- summary_merged %>%
+  filter(!is.na(stand)) %>%
+  mutate(dominant_tree_species = str_extract_all(dominant_tree_species, "\\b(Aspen|Douglas fir|Colorado Pinyon|Engelmann spruce|Limber pine|Ponderosa pine|Rocky Mountain juniper|Rocky Mountain maple|Subalpine fir|White fir)\\b")) %>%
+  unnest(dominant_tree_species) %>%
+  count(stand, dominant_tree_species) %>%
+  group_by(stand) %>%
+  mutate(total_rows_stand = sum(n)) %>%
+  ungroup() %>%
+  group_by(dominant_tree_species, stand) %>%
+  mutate(total_rows_species = sum(n)) %>%
+  ungroup() %>%
+  group_by(stand) %>%
+  slice(which.max(n)) %>%
+  mutate(percent_occurrence = n / first(total_rows_stand) * 100) %>%
+  mutate(dom_tree = paste0(dominant_tree_species, ", ", n, " plots, ", round(percent_occurrence, 2), "% of plots")) %>%
+  select(-n, -total_rows_stand, -total_rows_species)
 
 #### REGENERATION STATISTICS ####
 
