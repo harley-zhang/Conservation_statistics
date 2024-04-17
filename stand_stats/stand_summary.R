@@ -190,8 +190,8 @@ list_damage <- summary_merged %>%
 
 # Step 14: Merge all outputs into one dataframe
 stand_summary <- Reduce(function(x, y) merge(x, y, by = "stand", all = TRUE), 
-                        list(average_basal_area_per_acre_in, average_dbh_in, average_height_ft, 
-                             regeneration_presence, average_seedlings_per_acre,
+                        list(average_basal_area_per_acre_in, average_dbh_in, average_height_ft, dominant_tree_species,
+                             regeneration_presence, average_seedlings_per_acre, dominant_regeneration_species
                              insect_damage_presence, browse_damage_presence, list_damage))
 
 # Step 15: Write output to CSV
