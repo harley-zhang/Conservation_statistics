@@ -61,26 +61,27 @@ summary_merged <- summary_merged %>%
 average_basal_area_per_acre_in <- summary_merged %>%
   filter(!is.na(stand)) %>%
   group_by(stand) %>%
-  mutate(basal_area_per_acre_in = as.double(basal_area_per_acre_in)) %>%
   summarise(average_basal_area_per_acre_in = round(mean(basal_area_per_acre_in), 2))
 
 # Step 6: Average DBH (in)
 average_dbh_in <- summary_merged %>%
   filter(!is.na(stand)) %>%
   group_by(stand) %>%
-  mutate(average_dbh_in = as.double(average_dbh_in)) %>%
   summarise(average_dbh_in = round(mean(average_dbh_in), 2))
 
 # Step 7: Average height (ft)
 average_height_ft <- summary_merged %>%
   filter(!is.na(stand)) %>%
   group_by(stand) %>%
-  mutate(average_height_ft = as.double(average_height_ft)) %>%
   summarise(average_height_ft = round(mean(average_height_ft), 2))
 
 # Step 8: Dominant tree species
-
-
+dom_tree <- summary_merged %>%
+  filter(!is.na(stand)) %>%
+  mutate(species_code = str_extract(dominant_tree_species, "\\b(?:ABCO|PSME|PIPO|PSJE|SLFK|SLDK|ASGH)\\b")) %>%
+  group_by(stand) %>%
+  summarise(most_common_species = names(which.max(table(species_code)))) %>%
+  select(dom_tree)
 
 #### REGENERATION STATISTICS ####
 
