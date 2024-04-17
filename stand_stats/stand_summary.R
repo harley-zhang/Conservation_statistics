@@ -76,36 +76,6 @@ average_height_ft <- summary_merged %>%
   summarise(average_height_ft = round(mean(average_height_ft), 2))
 
 # Step 8: Dominant tree species
-dominant_species <- summary_merged %>%
-  filter(!is.na(stand)) %>%
-  mutate(dominant_tree_species = str_extract_all(dominant_tree_species, "\\b(Aspen|Douglas fir|Colorado Pinyon|Engelmann spruce|Limber pine|Ponderosa pine|Rocky Mountain juniper|Rocky Mountain maple|Subalpine fir|White fir)\\b")) %>%
-  unnest(dominant_tree_species) %>%
-  count(stand, dominant_tree_species) %>%
-  group_by(stand) %>%
-  mutate(total_rows_stand = sum(n())) %>%
-  ungroup() %>%
-  group_by(dominant_tree_species) %>%
-  mutate(total_rows_species = sum(total_rows_stand)) %>%
-  mutate(percent_occurrence = n / total_rows_species * 100) %>%
-  mutate(dom_tree = paste0(dominant_tree_species, ", ", n, " plots, ", round(percent_occurrence, 2), "% of plots")) %>%
-  select(-n, -total_rows_stand, -total_rows_species)
-
-dominant_spes <- summary_merged %>%
-  filter(!is.na(stand)) %>%
-  mutate(dominant_tree_species = str_extract_all(dominant_tree_species, "\\b(Aspen|Douglas fir|Colorado Pinyon|Engelmann spruce|Limber pine|Ponderosa pine|Rocky Mountain juniper|Rocky Mountain maple|Subalpine fir|White fir)\\b")) %>%
-  unnest(dominant_tree_species) %>%
-  count(stand, dominant_tree_species) %>%
-  group_by(stand) %>%
-  mutate(total_rows_stand = sum(n)) %>%
-  ungroup() %>%
-  group_by(dominant_tree_species) %>%
-  mutate(total_rows_species = sum(total_rows_stand)) %>%
-  ungroup() %>%
-  group_by(stand) %>%
-  slice(which.max(n)) %>%
-  mutate(percent_occurrence = n / sum(n) * 100) %>%
-  mutate(dom_tree = paste0(dominant_tree_species, ", ", n, " plots, ", round(percent_occurrence, 2), "% of plots")) %>%
-  select(-n, -total_rows_stand, -total_rows_species)
 
 
 #### REGENERATION STATISTICS ####
@@ -123,6 +93,21 @@ average_seedlings_per_acre <- summary_merged %>%
   summarise(average_seedlings_per_acre = round(mean(seedlings_per_acre), 2))
 
 # Step 10: Dominant regeneration species
+dom_tree <- summary_merged %>%
+  filter(!is.na(stand)) %>%
+  mutate(dominant_tree_species = str_extract_all(dominant_tree_species, "(Aspen|Douglas fir|Colorado Pinyon|Engelmann spruce|Limber pine|Ponderosa pine|Rocky Mountain juniper|Rocky Mountain maple|Subalpine fir|White fir|No live adult trees present)")) %>%
+  group_by(stand) %>%
+  mutate(total = sum(n())) %>%
+  ungroup() %>%
+  unnest(dominant_tree_species) %>%
+  group_by(stand, dominant_tree_species) %>%
+  summarise(occurrences = n(),
+            total = unique(total)) %>%
+  group_by(stand) %>%
+  mutate(percent_frequency = occurrences / total) %>%
+  slice(which.max(occurrences)) %>%
+  mutate(dom_tree = paste0(dominant_tree_species, " ", occurrences, " plots, ", round(percent_frequency*100, 2), "% of plots")) %>%
+  select(stand, dom_tree)
 
 
 #### DAMAGE STATISTICS ####
