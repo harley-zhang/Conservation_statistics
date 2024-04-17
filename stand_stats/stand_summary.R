@@ -98,14 +98,15 @@ dominant_spes <- summary_merged %>%
   group_by(stand) %>%
   mutate(total_rows_stand = sum(n)) %>%
   ungroup() %>%
-  group_by(dominant_tree_species, stand) %>%
-  mutate(total_rows_species = sum(n)) %>%
+  group_by(dominant_tree_species) %>%
+  mutate(total_rows_species = sum(total_rows_stand)) %>%
   ungroup() %>%
   group_by(stand) %>%
   slice(which.max(n)) %>%
-  mutate(percent_occurrence = n / first(total_rows_stand) * 100) %>%
+  mutate(percent_occurrence = n / sum(n) * 100) %>%
   mutate(dom_tree = paste0(dominant_tree_species, ", ", n, " plots, ", round(percent_occurrence, 2), "% of plots")) %>%
   select(-n, -total_rows_stand, -total_rows_species)
+
 
 #### REGENERATION STATISTICS ####
 
