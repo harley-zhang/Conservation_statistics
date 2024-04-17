@@ -13,13 +13,18 @@ summary_2022 <- summary_2022 %>%
   mutate(treatment_year = as.character(treatment_year),
          basal_area_per_acre_in = as.numeric(basal_area_per_acre_in),
          average_dbh_in = as.numeric(average_dbh_in),
-         average_height_ft = as.numeric(average_height_ft))
+         average_height_ft = as.numeric(average_height_ft)) %>%
+  rename(dominant_tree = dominant_tree_species,
+         dominant_regeneration = dominant_regeneration_species)
 
 summary_2023 <- summary_2023 %>%
   mutate(treatment_year = as.character(treatment_year),
          basal_area_per_acre_in = as.numeric(basal_area_per_acre_in),
          average_dbh_in = as.numeric(average_dbh_in),
-         average_height_ft = as.numeric(average_height_ft))
+         average_height_ft = as.numeric(average_height_ft)) %>%
+  rename(dominant_tree = dominant_tree_species,
+         dominant_regeneration = dominant_regeneration_species)
+
 
 # Step 3: Merge data frames
 summary_merged <- bind_rows(summary_2022, summary_2023)
@@ -50,8 +55,8 @@ remove_second_dom <- function(species) {
 
 summary_merged <- summary_merged %>%
   mutate(
-    dominant_tree_species = sapply(dominant_tree_species, remove_second_dom),
-    dominant_regeneration_species = sapply(dominant_regeneration_species, remove_second_dom)
+    dominant_tree = sapply(dominant_tree, remove_second_dom),
+    dominant_regeneration = sapply(dominant_regeneration, remove_second_dom)
   )
 
 
@@ -76,6 +81,23 @@ average_height_ft <- summary_merged %>%
   summarise(average_height_ft = round(mean(average_height_ft), 2))
 
 # Step 8: Dominant tree species
+dominant_tree_species <- summary_merged %>%
+  filter(!is.na(stand)) %>%
+  mutate(dominant_tree = str_extract_all(dominant_tree, "(Aspen|Douglas fir|Colorado Pinyon|Engelmann spruce|Limber pine|Ponderosa pine|Rocky Mountain juniper|Rocky Mountain maple|Subalpine fir|White fir|No live adult trees present)")) %>%
+  group_by(stand) %>%
+  mutate(total = sum(n())) %>%
+  ungroup() %>%
+  unnest(dominant_tree) %>%
+  group_by(stand, dominant_tree) %>%
+  summarise(occurrences = n(),
+            total = unique(total)) %>%
+  group_by(stand) %>%
+  mutate(percent_frequency = occurrences / total) %>%
+  mutate(dominant_tree_species = paste0(dominant_tree, " ", occurrences, " plots, ", round(percent_frequency*100, 2), "% of plots")) %>%
+  mutate(rank = ifelse(dominant_tree == "No live adult trees present", occurrences - max(occurrences), occurrences)) %>%
+  group_by(stand) %>%
+  slice(which.max(rank)) %>%
+  select(stand, dominant_tree_species)
 
 
 #### REGENERATION STATISTICS ####
@@ -93,23 +115,23 @@ average_seedlings_per_acre <- summary_merged %>%
   summarise(average_seedlings_per_acre = round(mean(seedlings_per_acre), 2))
 
 # Step 10: Dominant regeneration species
-dominant_tree_species <- summary_merged %>%
+dominant_regeneration_species <- summary_merged %>%
   filter(!is.na(stand)) %>%
-  mutate(dominant_tree_species = str_extract_all(dominant_tree_species, "(Aspen|Douglas fir|Colorado Pinyon|Engelmann spruce|Limber pine|Ponderosa pine|Rocky Mountain juniper|Rocky Mountain maple|Subalpine fir|White fir|No live adult trees present)")) %>%
+  mutate(dominant_regeneration = str_extract_all(dominant_regeneration, "(Aspen|Douglas fir|Colorado Pinyon|Engelmann spruce|Limber pine|Ponderosa pine|Rocky Mountain juniper|Rocky Mountain maple|Subalpine fir|White fir|No live adult trees present)")) %>%
   group_by(stand) %>%
   mutate(total = sum(n())) %>%
   ungroup() %>%
-  unnest(dominant_tree_species) %>%
-  group_by(stand, dominant_tree_species) %>%
+  unnest(dominant_regeneration) %>%
+  group_by(stand, dominant_regeneration) %>%
   summarise(occurrences = n(),
             total = unique(total)) %>%
   group_by(stand) %>%
   mutate(percent_frequency = occurrences / total) %>%
-  mutate(dominant_tree_species = paste0(dominant_tree_species, ", ", occurrences, " plots, ", round(percent_frequency*100, 2), "% of plots")) %>%
-  mutate(rank = ifelse(dominant_tree_species == "No live adult trees present", occurrences - max(occurrences), occurrences)) %>%
+  mutate(dominant_regeneration_species = paste0(dominant_regeneration, " ", occurrences, " plots, ", round(percent_frequency*100, 2), "% of plots")) %>%
+  mutate(rank = ifelse(dominant_regeneration == "No live adult trees present", occurrences - max(occurrences), occurrences)) %>%
   group_by(stand) %>%
   slice(which.max(rank)) %>%
-  select(stand, dominant_tree_species)
+  select(stand, dominant_regeneration_species)
 
 
 #### DAMAGE STATISTICS ####
