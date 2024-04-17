@@ -124,7 +124,7 @@ dominant_regeneration_species <- summary_merged %>%
   unnest(dominant_regeneration) %>%
   group_by(stand, dominant_regeneration) %>%
   summarise(occurrences = n(),
-            total = unique(total)) %>%
+            total = unique(total)) #%>%
   group_by(stand) %>%
   mutate(percent_frequency = occurrences / total) %>%
   mutate(dominant_regeneration_species = paste0(dominant_regeneration, ", ", occurrences, " plots, ", round(percent_frequency*100, 2), "% of plots")) %>%
