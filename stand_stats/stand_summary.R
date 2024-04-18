@@ -92,9 +92,11 @@ dominant_tree_species <- summary_merged %>%
   summarise(occurrences = n(),
             total = unique(total)) %>%
   group_by(stand) %>%
-  mutate(percent_frequency = occurrences / total) %>%
-  mutate(dominant_tree_species = paste0(dominant_tree, ", ", occurrences, " plots, ", round(percent_frequency*100, 2), "% of plots")) %>%
-  mutate(rank = ifelse(dominant_tree == "No live adult trees present", occurrences - max(occurrences), occurrences)) %>%
+  mutate(
+    percent_frequency = occurrences / total,
+    dominant_tree_species = paste0(dominant_tree, ", ", occurrences, " plots, ", round(percent_frequency*100, 2), "% of plots"),
+    rank = ifelse(dominant_tree == "No live adult trees present", occurrences - max(occurrences), occurrences)
+  ) %>%
   group_by(stand) %>%
   slice(which.max(rank)) %>%
   select(stand, dominant_tree_species)
@@ -126,9 +128,11 @@ dominant_regeneration_species <- summary_merged %>%
   summarise(occurrences = n(),
             total = unique(total)) %>%
   group_by(stand) %>%
-  mutate(percent_frequency = occurrences / total) %>%
-  mutate(dominant_regeneration_species = paste0(dominant_regeneration, ", ", occurrences, " plots, ", round(percent_frequency*100, 2), "% of plots")) %>%
-  mutate(rank = ifelse(dominant_regeneration == "None", occurrences - max(occurrences), occurrences)) %>%
+  mutate(
+    percent_frequency = occurrences / total,
+    dominant_regeneration_species = paste0(dominant_regeneration, ", ", occurrences, " plots, ", round(percent_frequency*100, 2), "% of plots"),
+    rank = ifelse(dominant_regeneration == "None", occurrences - max(occurrences), occurrences)
+  ) %>%
   group_by(stand) %>%
   slice(which.max(rank)) %>%
   select(stand, dominant_regeneration_species)
