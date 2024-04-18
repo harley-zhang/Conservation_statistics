@@ -194,5 +194,16 @@ stand_summary <- Reduce(function(x, y) merge(x, y, by = "stand", all = TRUE),
                              regeneration_presence, average_seedlings_per_acre, dominant_regeneration_species,
                              insect_damage_presence, browse_damage_presence, list_damage))
 
-# Step 15: Write output to CSV
+# Step 15: If list_damage="None", but browse/insect are present, indicate that in list_damage
+stand_summary <- stand_summary %>%
+  mutate(
+    list_damage = case_when(
+      list_damage == "None" & browse_damage_presence == "Browse present" & insect_damage_presence == "Insect damage absent" ~ "Browse",
+      list_damage == "None" & browse_damage_presence == "Browse absent" & insect_damage_presence == "Insect damage present" ~ "Insect",
+      list_damage == "None" & browse_damage_presence == "Browse present" & insect_damage_presence == "Insect damage present" ~ "Browse, insect",
+      TRUE ~ list_damage
+    )
+  )
+
+# Step 16: Write output to CSV
 write.csv(stand_summary, file = "/Users/harley/Documents/Github/Trinchera_summary/stand_stats/stand_summary.csv", row.names = FALSE)
