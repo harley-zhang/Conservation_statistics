@@ -166,7 +166,15 @@ insect_damage_presence <- summary_merged %>%
 browse_damage_presence <- summary_merged %>%
   filter(!is.na(stand)) %>%
   group_by(stand) %>%
-  summarise(browse_damage_presence = ifelse(any(browse_damage_presence == "Browse present"), "Browse present", "Browse absent"))
+  summarise(
+    total_rows = n(),
+    browse_rows = sum(browse_damage_presence == "Browse present"),
+    browse_percentage = round((browse_rows / total_rows) * 100, 2)
+  ) %>%
+  mutate(
+    browse_damage_presence = paste0(browse_rows, " plots, ", browse_percentage, "% of plots")
+  ) %>%
+  select(stand, browse_damage_presence)
 
 # Step 13: List of damage types
 list_damage <- summary_merged %>%
