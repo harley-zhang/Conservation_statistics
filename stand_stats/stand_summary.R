@@ -226,9 +226,9 @@ stand_summary <- Reduce(function(x, y) merge(x, y, by = "stand", all = TRUE),
 stand_summary <- stand_summary %>%
   mutate(
     list_damage = case_when(
-      list_damage == "None" & browse_damage_presence == "Browse present" & insect_damage_presence == "Insect damage absent" ~ "Browse",
-      list_damage == "None" & browse_damage_presence == "Browse absent" & insect_damage_presence == "Insect damage present" ~ "Insect",
-      list_damage == "None" & browse_damage_presence == "Browse present" & insect_damage_presence == "Insect damage present" ~ "Browse, insect",
+      list_damage == "None" & browse_damage_presence != "0 plots, 0% of plots" & insect_damage_presence == "0 plots, 0% of plots" ~ "Browse",
+      list_damage == "None" & browse_damage_presence == "0 plots, 0% of plots" & insect_damage_presence != "0 plots, 0% of plots" ~ "Insect",
+      list_damage == "None" & browse_damage_presence != "0 plots, 0% of plots" & insect_damage_presence != "0 plots, 0% of plots" ~ "Browse, insect",
       TRUE ~ list_damage
     )
   )
