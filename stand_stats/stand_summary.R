@@ -108,7 +108,16 @@ dominant_tree_species <- summary_merged %>%
 regeneration_presence <- summary_merged %>%
   filter(!is.na(stand)) %>%
   group_by(stand) %>%
-  summarise(regeneration_presence = ifelse(any(regeneration_presence == "Regeneration present"), "Regeneration present", "Regeneration absent"))
+  summarise(
+    total_rows = n(),
+    regeneration_rows = sum(regeneration_presence == "Regeneration present"),
+    regeneration_percentage = round((regeneration_rows / total_rows) * 100, 2)
+  ) %>%
+  mutate(
+    regeneration_presence = paste0(regeneration_rows, " plots, ", regeneration_percentage, "% of stands")
+  ) %>%
+  select(stand, regeneration_presence)
+
 
 # Step 9: Average seedlings per acre
 average_seedlings_per_acre <- summary_merged %>%
