@@ -114,10 +114,9 @@ regeneration_presence <- summary_merged %>%
     regeneration_percentage = round((regeneration_rows / total_rows) * 100, 2)
   ) %>%
   mutate(
-    regeneration_presence = paste0(regeneration_rows, " plots, ", regeneration_percentage, "% of stands")
+    regeneration_presence = paste0(regeneration_rows, " plots, ", regeneration_percentage, "% of plots")
   ) %>%
   select(stand, regeneration_presence)
-
 
 # Step 9: Average seedlings per acre
 average_seedlings_per_acre <- summary_merged %>%
@@ -153,7 +152,15 @@ dominant_regeneration_species <- summary_merged %>%
 insect_damage_presence <- summary_merged %>%
   filter(!is.na(stand)) %>%
   group_by(stand) %>%
-  summarise(insect_damage_presence = ifelse(any(insect_damage_presence == "Insect damage present"), "Insect damage present", "Insect damage absent"))
+  summarise(
+    total_rows = n(),
+    insect_rows = sum(insect_damage_presence == "Insect damage present"),
+    insect_percentage = round((insect_rows / total_rows) * 100, 2)
+  ) %>%
+  mutate(
+    insect_damage_presence = paste0(insect_rows, " plots, ", insect_percentage, "% of plots")
+  ) %>%
+  select(stand, insect_damage_presence)
 
 # Step 12: Browse presence (Y/N)
 browse_damage_presence <- summary_merged %>%
