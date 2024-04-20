@@ -18,7 +18,7 @@ treatment_year <- input_data %>%
   summarise(treatment_year = ifelse(is.na(unique(treatment_year)) | unique(treatment_year) == 0, "Unknown", as.character(unique(treatment_year))))
 
 # Step 3: Treatment type
-## *NOTE*: before this step, go into the input_data CSV and remove special character in front of "pipu"'s and change remove all abco to remove abco
+## *NOTE*: before this step, go into the input_data CSV and remove special character in front of "pipu"'s and change "remove all abco" to remove "abco"
 treatment_type <- input_data %>%
   mutate(
     treatment_type_long = tolower(treatment_type_long),

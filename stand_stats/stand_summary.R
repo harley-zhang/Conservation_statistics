@@ -25,7 +25,6 @@ summary_2023 <- summary_2023 %>%
   rename(dominant_tree = dominant_tree_species,
          dominant_regeneration = dominant_regeneration_species)
 
-
 # Step 3: Merge data frames
 summary_merged <- bind_rows(summary_2022, summary_2023)
 

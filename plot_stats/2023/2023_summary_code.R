@@ -6,7 +6,7 @@ library(stringr)
 # Step 1: Read in raw/input CSV
 input_data <- read.csv("/Users/harley/Documents/Github/Trinchera_summary/plot_stats/2023/cleanedMerged_Forestry23_030524_2.csv")
 
-# Rename `new_plot_key` to `plot` (to match 2022)
+# Rename "new_plot_key" to "plot" (to match 2022)
 input_data <- input_data %>%
   rename(plot = new_plot_key)
 
