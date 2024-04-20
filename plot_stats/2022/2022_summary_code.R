@@ -46,7 +46,6 @@ treatment_type <- input_data %>%
       treatment_type_long == "drainagewithdeadtoppedpsmeandabco" ~ "drainage with dead topped douglas fir and white fir",
       treatment_type_long == "heavybudwormdamagewithdeadtoppeddfandwf" ~ "heavy budworm damage with dead topped douglas fir and white fir",
       treatment_type_long == "inthecleanupportionremoveabco,pipu,andpipowithmistletoe" ~ "in the cleanup portion, remove white fir, pipu, and ponderosa pine with mistletoe",
-      treatment_type_long == "mastication" ~ "mastication",
       treatment_type_long == "removeabco" ~ "remove all white fir",
       treatment_type_long == "removeallabcoandmistletoe" ~ "remove all white fir and mistletoe",
       treatment_type_long == "removeallwhitefir,rmj,andlargepoorlyformeddf" ~ "remove all whitefir, rocky mountain juniper, and large poorly formed douglas fir",
@@ -56,8 +55,6 @@ treatment_type <- input_data %>%
       treatment_type_long == "removemistletoe" ~ "remove all mistletoe",
       treatment_type_long == "retainaspen,ponderosapine,andyoungdf" ~ "retain aspen, ponderosa pine, and young douglas fir",
       treatment_type_long == "retainhealthyponderosapineanddouglasfir" ~ "retain healthy ponderosa pine and douglas fir",
-      treatment_type_long == "salvage" ~ "salvage",
-      treatment_type_long == "shelterwood" ~ "shelterwood",
       treatment_type_long == "thinfrombelow" ~ "thin from below",
       TRUE ~ NA_character_
     )

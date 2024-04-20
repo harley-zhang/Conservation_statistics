@@ -175,19 +175,10 @@ list_damage <- input_data %>%
     what_if_any_disease_damage_present = trimws(what_if_any_disease_damage_present),
     what_if_any_disease_damage_present = case_when(
       what_if_any_disease_damage_present == "barkbeetle" ~ "bark beetle",
-      what_if_any_disease_damage_present == "browse" ~ "browse",
-      what_if_any_disease_damage_present == "canker" ~ "canker",
       what_if_any_disease_damage_present == "douglasfiradelgid" ~ "douglas fir adelgid",
-      what_if_any_disease_damage_present == "fungus" ~ "fungus",
-      what_if_any_disease_damage_present == "mistletoe" ~ "mistletoe",
-      what_if_any_disease_damage_present == "galls" ~ "galls",
-      what_if_any_disease_damage_present == "gash" ~ "gash",
       what_if_any_disease_damage_present == "mechanicaldamage" ~ "mechanical damage",
-      what_if_any_disease_damage_present == "sapsucker" ~ "sapsucker",
       what_if_any_disease_damage_present == "sprucebudworm" ~ "spruce budworm",
       what_if_any_disease_damage_present == "winddamage" ~ "wind damage",
-      what_if_any_disease_damage_present == "woodpecker" ~ "woodpecker",
-      what_if_any_disease_damage_present == "rot" ~ "rot",
       TRUE ~ NA_character_
     )
   ) %>%
