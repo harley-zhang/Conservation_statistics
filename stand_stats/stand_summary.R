@@ -187,19 +187,10 @@ list_damage <- summary_merged %>%
   mutate(
     list_damage = case_when(
       list_damage == "barkbeetle" ~ "bark beetle",
-      list_damage == "browse" ~ "browse",
-      list_damage == "canker" ~ "canker",
       list_damage == "douglasfiradelgid" ~ "douglas fir adelgid",
-      list_damage == "fungus" ~ "fungus",
-      list_damage == "mistletoe" ~ "mistletoe",
-      list_damage == "galls" ~ "galls",
-      list_damage == "gash" ~ "gash",
       list_damage == "mechanicaldamage" ~ "mechanical damage",
-      list_damage == "sapsucker" ~ "sapsucker",
       list_damage == "sprucebudworm" ~ "spruce budworm",
       list_damage == "winddamage" ~ "wind damage",
-      list_damage == "woodpecker" ~ "woodpecker",
-      list_damage == "rot" ~ "rot",
       TRUE ~ NA_character_
     )
   ) %>%
