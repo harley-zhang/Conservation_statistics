@@ -1,15 +1,15 @@
-# Trinchera Ranch Summary Statistics
+# Colorado Conservation Summary Statistics
 
 <div>
  <img src="https://img.shields.io/badge/R-%23276DC3.svg?style=for-the-badge&logo=R&logoColor=white"/>
  <br><br>
 </div>
   
- Using R to summarize relevant 2022 and 2023 survey statistics for Trinchera Ranch, a 172,000-acre conservation area in Fort Garland, Colorado. Developed with the Yale School of the Environment. Uses dplyr, tidyr, and stringr.
+ Using R to summarize relevant 2022 and 2023 survey statistics for a 172,000-acre conservation area in Colorado. Developed with the Yale School of the Environment as part of The Partnership in Forestry and Rangeland Research Program. Uses dplyr, tidyr, and stringr.
 
 To clone this repository:
 
-    git clone https://github.com/harley-zhang/Trinchera_summary
+    git clone https://github.com/harley-zhang/Conservation_summary
 
 <br>
 
