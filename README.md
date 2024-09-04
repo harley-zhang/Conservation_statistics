@@ -11,8 +11,6 @@ To clone this repository:
 
     git clone https://github.com/harley-zhang/Conservation_summary
 
-<br>
-
 ## Plot statistics
 
 ### Treatment statistics:
@@ -34,8 +32,6 @@ To clone this repository:
 - **Insect presence:** Determines if insect damage is present in each plot (Y/N).
 - **Browse presence:** Identifies if browse damage is present in each plot (Y/N).
 - **List of damage types:** Lists each type of damage present in each plot.
-
-<br>
 
 ## Forest stand statistics
 
